@@ -2,7 +2,7 @@
 // @name Monster Minigame Wormhole Warp (MMWW)
 // @namespace https://github.com/DannyDaemonic/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.
-// @version 1.0.8
+// @version 1.0.9
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -1238,7 +1238,7 @@ function useAbilities(level, timeLeft)
 {
 	var currentLane = s().m_nExpectedLane;
 
-	if ((level % 100) == 0) {
+	if ((level % 100) === 0) {
 		if (tryUsingAbility(ABILITIES.DECREASE_COOLDOWNS)) {
 			advLog('Firing decreased cooldowns before triggering wormholes...', 2);
 		}
@@ -1247,7 +1247,7 @@ function useAbilities(level, timeLeft)
 		}
 	}
 	
-	if ((level % 100) > 98 || (level % 100) == 0) {
+	if ((level % 100) > 98 || (level % 100) === 0) {
 		// don't use damage abilities
 
 		// check if Medics is purchased and cooled down
