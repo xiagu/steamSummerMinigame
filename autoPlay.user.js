@@ -2,7 +2,7 @@
 // @name Monster Minigame Wormhole Warp (MMWW)
 // @namespace https://github.com/DannyDaemonic/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.
-// @version 1.0.5
+// @version 1.0.6
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -437,8 +437,11 @@ function MainLoop() {
 		useAutoUpgrade();
 		useAutoPurchaseAbilities();
 
-		if (level % 100 < 98) {
-			s().m_nClicks += currentClickRate;
+		if ((level % 100) != 0) {
+			if ((level % 100) < 98) {
+				s().m_nClicks += currentClickRate;
+			} else {
+			  s().m_nClicks += currentClickRate / 5;
 		}
 		
 		s().m_nLastTick = false;
