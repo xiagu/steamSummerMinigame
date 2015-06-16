@@ -2,7 +2,7 @@
 // @name Monster Minigame Wormhole Warp (MMWW)
 // @namespace https://github.com/DannyDaemonic/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.
-// @version 1.0.4
+// @version 1.0.5
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -1832,7 +1832,7 @@ function updateLevelInfoTitle(level)
 	ELEMENTS.RemainingTime.textContent = 'Remaining Time: ' + rem_time.hours + ' hours, ' + rem_time.minutes + ' minutes.';
 }
 
-badgePurchase(ability) {
+function badgePurchase(ability) {
 	g_Minigame.m_CurrentScene.TrySpendBadgePoints($J('#purchase_abilityitem_' + ability))
 }
 
