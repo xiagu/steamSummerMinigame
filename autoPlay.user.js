@@ -2,7 +2,7 @@
 // @name Monster Minigame Wormhole Warp (MMWW)
 // @namespace https://github.com/DannyDaemonic/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.
-// @version 1.0.1
+// @version 1.0.2
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -1509,6 +1509,11 @@ function useAbilities(level, timeLeft)
 		// Resurrect is purchased and we are using it.
 		advLog('Triggered Resurrect.');
 	}
+	
+	// Use Godmode if we have it
+	if (tryUsingAbility(ABILITIES.GOD_MODE)) {
+		advLog('We have god mode, cooled down. Trigger it.', 2);
+	}
 }
 
 function attemptRespawn() {
@@ -1833,7 +1838,7 @@ function spendBadgePoints() {
 	if (g_Minigame.m_CurrentScene.m_rgPlayerTechTree.badge_points > 0) {
 		if (g_Minigame.m_CurrentScene.m_rgPlayerTechTree.badge_points > 100) {
 			badgePurchase(ABILITIES.WORMHOLE)
-		} else if (g_Minigame.m_CurrentScene.m_rgPlayerTechTree.badge_points > 20) {
+		} else if (g_Minigame.m_CurrentScene.m_rgPlayerTechTree.badge_points > 50) {
 			badgePurchase(ABILITIES.CRIT);
 		} else {
 			badgePurchase(ABILITIES.GOD_MODE);
