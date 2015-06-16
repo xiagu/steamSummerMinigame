@@ -2,7 +2,7 @@
 // @name Monster Minigame Wormhole Warp (MMWW)
 // @namespace https://github.com/DannyDaemonic/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.
-// @version 0.9.5
+// @version 1.0
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -1829,8 +1829,10 @@ function spendBadgePoints() {
 	if (g_Minigame.m_CurrentScene.m_rgPlayerTechTree.badge_points > 0) {
 		if (g_Minigame.m_CurrentScene.m_rgPlayerTechTree.badge_points > 100) {
 			g_Minigame.m_CurrentScene.TrySpendBadgePoints($J('#purchase_abilityitem_26')); //wormhole
+		} else if (g_Minigame.m_CurrentScene.m_rgPlayerTechTree.badge_points > 20) {
+			g_Minigame.m_CurrentScene.TrySpendBadgePoints($J('#purchase_abilityitem_18')); //crit
 		} else {
-			; g_Minigame.m_CurrentScene.TrySpendBadgePoints($J('#purchase_abilityitem_21')); //god mode
+			g_Minigame.m_CurrentScene.TrySpendBadgePoints($J('#purchase_abilityitem_21')); //god mode
 		}
 	}
 }
