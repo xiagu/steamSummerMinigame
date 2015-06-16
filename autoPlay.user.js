@@ -1836,7 +1836,7 @@ function updateLevelInfoTitle(level)
 }
 
 function badgePurchase(ability) {
-	g_Minigame.m_CurrentScene.TrySpendBadgePoints($J('#purchase_abilityitem_' + ability))
+	g_Minigame.m_CurrentScene.TrySpendBadgePoints($J('#purchase_abilityitem_' + ability));
 }
 
 function spendBadgePoints() {
