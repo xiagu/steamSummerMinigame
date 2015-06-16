@@ -2,7 +2,7 @@
 // @name Monster Minigame Wormhole Warp (MMWW)
 // @namespace https://github.com/DannyDaemonic/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.
-// @version 1.0.3
+// @version 1.0.4
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -24,7 +24,7 @@ var nukeBeforeReset = getPreferenceBoolean("nukeBeforeReset", true);
 var enableAutoClicker = getPreferenceBoolean("enableAutoClicker", true);
 
 var enableAutoUpgradeHP = getPreferenceBoolean("enableAutoUpgradeHP", true);
-var enableAutoUpgradeClick = getPreferenceBoolean("enableAutoUpgradeClick", false);
+var enableAutoUpgradeClick = getPreferenceBoolean("enableAutoUpgradeClick", true);
 var enableAutoUpgradeDPS = getPreferenceBoolean("enableAutoUpgradeDPS", false);
 var enableAutoUpgradeElemental = getPreferenceBoolean("enableAutoUpgradeElemental", false);
 var enableAutoPurchase = getPreferenceBoolean("enableAutoPurchase", false);
