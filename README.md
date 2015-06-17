@@ -4,7 +4,7 @@
 
 ## Purpose ##
 
-WORMHOLE to 300k!
+WORMHOLES!
 
 This fork has:
 * Buys wormholes
