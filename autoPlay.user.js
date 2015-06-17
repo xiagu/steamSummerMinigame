@@ -2,7 +2,7 @@
 // @name Monster Minigame Wormhole Warp (MMWW)
 // @namespace https://github.com/DannyDaemonic/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.
-// @version 4.8.8.1
+// @version 4.8.8.2
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -1633,7 +1633,7 @@ function tryUsingAbility(itemId, checkInLane) {
 		return false;
 	}
 
-	if (checkInLane && getActiveAbilityLaneCount(itemId) > 0) {
+	if (checkInLane && getActiveAbilityTimeout(itemId) >= getCurrentTime()) {
 		return false;
 	}
 
@@ -1685,6 +1685,18 @@ function isAbilityEnabled(abilityId) {
 		return elem.childElements()[0].style.visibility !== "hidden";
 	}
 	return false;
+}
+
+function getActiveAbilityTimeout(ability) {
+  var timeout = 0;
+	var abilities = s().m_rgGameData.lanes[s().m_rgPlayerData.current_lane].active_player_abilities;
+	var count = 0;
+	for(var i = 0; i < abilities.length; i++) {
+		if(abilities[i].ability == ability && abilities[i].timestamp_done > timeout) {
+			timeout = abilities[i].timestamp_done;
+		}
+	}
+	return timeout;
 }
 
 function getActiveAbilityLaneCount(ability) {
