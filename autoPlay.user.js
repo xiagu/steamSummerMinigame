@@ -1855,7 +1855,7 @@ function badgePurchase(ability) {
 }
 
 function spendBadgePoints() {
-	var badgePoints = g_Minigame.m_CurrentScene.m_rgPlayerTechTree.badge_points
+	var badgePoints = g_Minigame.m_CurrentScene.m_rgPlayerTechTree.badge_points;
 	if (badgePoints > 0) {
 	  var limit = 500;
 	  while (badgePoints > 0 && limit-- > 0) {
