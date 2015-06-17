@@ -2,7 +2,7 @@
 // @name Monster Minigame Wormhole Warp (MMWW)
 // @namespace https://github.com/DannyDaemonic/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.
-// @version 4.7.6.2
+// @version 4.8.1.1
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -145,7 +145,8 @@ var CONTROL = {
 	speedThreshold: 2000,
 	rainingRounds: 100,
 	disableGoldRainLevels: 500,
-	goldholeThreshold: 200
+	goldholeThreshold: 200,
+	rainingSafeRounds: 10
 };
 
 var GAME_STATUS = {
@@ -438,15 +439,16 @@ function MainLoop() {
 		var absoluteCurrentClickRate = 0;
 
 		if(currentClickRate > 0) {
-			absoluteCurrentClickRate = level > CONTROL.goldholeThreshold && level % CONTROL.rainingRounds === 0 ? 2 : currentClickRate;
-			
+			var levelRainingMod = level % CONTROL.rainingRounds;
+
+			absoluteCurrentClickRate = level > CONTROL.goldholeThreshold && (levelRainingMod === 0 || 3 >= (CONTROL.rainingRounds - levelRainingMod)) ? 2 : currentClickRate;
+
 			// throttle back as we approach
 			for(var i = 0; i < 3; i++) {
-				if(level % CONTROL.rainingRounds > CONTROL.rainingRounds - i) {
+				if(levelRainingMod > CONTROL.rainingRounds - i) {
 					absoluteCurrentClickRate /= 2;
 				}
 			}
-			
 			s().m_nClicks += absoluteCurrentClickRate;
 		}
 
@@ -552,6 +554,13 @@ function useAutoUpgrade() {
 		&& !enableAutoUpgradeElemental
 		) {
 		autoupgrade_update_hilight = false;
+		return;
+	}
+
+	// fixes hiligh when we tick before elements are created
+	if(!document.querySelector('.container_upgrades')
+		|| !document.querySelector('.container_upgrades').hasChildNodes()
+		) {
 		return;
 	}
 
@@ -1203,27 +1212,29 @@ function goToLaneWithBestTarget(level) {
 			advLog('Switching targets', 3);
 			s().TryChangeTarget(lowTarget);
 		}
+	}
 
-		// Prevent attack abilities and items if up against a boss or treasure minion
-		if (targetIsTreasure || (targetIsBoss && (level < CONTROL.speedThreshold || level % CONTROL.rainingRounds === 0))) {
-			BOSS_DISABLED_ABILITIES.forEach(disableAbility);
-		} else {
-			BOSS_DISABLED_ABILITIES.forEach(enableAbility);
-		}
+	var levelRainingMod = level % CONTROL.rainingRounds;
 
-		// Always disable wormhole on lower levels
-		if(level < CONTROL.speedThreshold) {
-			disableAbility(ABILITIES.WORMHOLE);
-		} else {
-			enableAbility(ABILITIES.WORMHOLE);
-		}
+	// Prevent attack abilities and items if up against a boss or treasure minion
+	if (targetIsTreasure || (level < CONTROL.speedThreshold || levelRainingMod === 0 || CONTROL.rainingSafeRounds >= (CONTROL.rainingRounds - levelRainingMod))) {
+		BOSS_DISABLED_ABILITIES.forEach(disableAbility);
+	} else {
+		BOSS_DISABLED_ABILITIES.forEach(enableAbility);
+	}
 
-		// Disable raining gold for the first levels
-		if(level < CONTROL.rainingRounds) {
-			disableAbility(ABILITIES.RAINING_GOLD);
-		} else {
-			enableAbility(ABILITIES.RAINING_GOLD);
-		}
+	// Always disable wormhole on lower levels
+	if(level < CONTROL.speedThreshold) {
+		disableAbility(ABILITIES.WORMHOLE);
+	} else {
+		enableAbility(ABILITIES.WORMHOLE);
+	}
+
+	// Disable raining gold for the first levels
+	if(level < CONTROL.rainingRounds) {
+		disableAbility(ABILITIES.RAINING_GOLD);
+	} else {
+		enableAbility(ABILITIES.RAINING_GOLD);
 	}
 }
 
@@ -1233,18 +1244,6 @@ function hasMaxCriticalOnLane() {
 	var totalCritical = goodLuckCharms + crit;
 
 	if (totalCritical >= 99) { // Lane has 1% by default
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-
-function isRainingRound(level)
-{
-	var mod = level % CONTROL.rainingRounds;
-
-	if (mod === 0) {
 		return true;
 	}
 	else {
@@ -1302,8 +1301,10 @@ function useAbilities(level)
 
 	}
 
+	var levelRainingMod = level % CONTROL.rainingRounds;
+
 	// Wormhole
-	if(level > CONTROL.goldholeThreshold && level % CONTROL.rainingRounds === 0) {
+	if(level > CONTROL.goldholeThreshold && levelRainingMod === 0) {
 		advLog('Trying to trigger cooldown and wormhole...', 1);
 
 		tryUsingAbility(ABILITIES.DECREASE_COOLDOWNS, true);
@@ -1312,6 +1313,13 @@ function useAbilities(level)
 		tryUsingAbility(ABILITIES.LIKE_NEW, true);
 
 		// Exit right now so we don't use any other abilities after wormhole
+		return;
+	}
+
+	// Skip doing any damage x levels before upcoming wormhole round
+	if(CONTROL.rainingSafeRounds >= (CONTROL.rainingRounds - levelRainingMod)) {
+		tryUsingAbility(ABILITIES.RESURRECTION, true);
+
 		return;
 	}
 
@@ -1395,8 +1403,7 @@ function useAbilities(level)
 	}
 
 	// Tactical Nuke
-	if(!isRainingRound(level) && canUseAbility(ABILITIES.TACTICAL_NUKE)) {
-
+	if(canUseAbility(ABILITIES.TACTICAL_NUKE)) {
 		enemy = s().GetEnemy(s().m_rgPlayerData.current_lane, s().m_rgPlayerData.target);
 		// check whether current target is a boss
 		if (enemy && enemy.m_data.type == ENEMY_TYPE.BOSS) {
