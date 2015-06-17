@@ -2,7 +2,7 @@
 // @name Monster Minigame Wormhole Warp (MMWW)
 // @namespace https://github.com/DannyDaemonic/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.
-// @version 4.8.1.4
+// @version 4.8.8.1
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -26,6 +26,7 @@ var enableAutoUpgradeClick = getPreferenceBoolean("enableAutoUpgradeClick", fals
 var enableAutoUpgradeDPS = getPreferenceBoolean("enableAutoUpgradeDPS", false);
 var enableAutoUpgradeElemental = getPreferenceBoolean("enableAutoUpgradeElemental", false);
 var enableAutoPurchase = getPreferenceBoolean("enableAutoPurchase", false);
+var enableAutoBadgePurchase = getPreferenceBoolean("enableAutoBadgePurchase", true);
 
 var removeInterface = getPreferenceBoolean("removeInterface", true); // get rid of a bunch of pointless DOM
 var removeParticles = getPreferenceBoolean("removeParticles", true);
@@ -145,7 +146,6 @@ var CONTROL = {
 	speedThreshold: 2000,
 	rainingRounds: 100,
 	disableGoldRainLevels: 500,
-	goldholeThreshold: 200,
 	rainingSafeRounds: 10
 };
 
@@ -260,6 +260,8 @@ function firstRun() {
 		".bc_room {color: #D4E157;}",
 		".bc_level {color: #FFA07A;}",
 		".bc_time {color: #9AC0FF;}",
+		// Always show ability count
+		".abilitytemplate > a > .abilityitemquantity {visibility: visible; pointer-events: none;}",
 		""
 	];
 	styleNode.textContent = styleText.join("");
@@ -305,6 +307,7 @@ function firstRun() {
 	options1.appendChild(makeCheckBox("enableAutoUpgradeDPS", "Enable AutoUpgrade DPS", enableAutoUpgradeDPS, toggleAutoUpgradeDPS, false));
 	options1.appendChild(makeCheckBox("enableAutoUpgradeElemental", "Enable AutoUpgrade locked elemental", enableAutoUpgradeElemental, toggleAutoUpgradeElemental, false));
 	options1.appendChild(makeCheckBox("enableAutoPurchase", "Enable AutoPurchase Abilities", enableAutoPurchase, toggleAutoPurchase, false));
+	options1.appendChild(makeCheckBox("enableAutoBadgePurchase", "Enable AutoPurchase badges (WH strat)", enableAutoBadgePurchase, toggleAutoBadgePurchase, false));
 	options1.appendChild(makeCheckBox("removeInterface", "Remove interface", removeInterface, handleEvent, true));
 	options1.appendChild(makeCheckBox("removeParticles", "Remove particle effects", removeParticles, handleEvent, true));
 	options1.appendChild(makeCheckBox("removeFlinching", "Remove flinching effects", removeFlinching, handleEvent, true));
@@ -411,8 +414,6 @@ function MainLoop() {
 	if (!isAlreadyRunning) {
 		isAlreadyRunning = true;
 		
-		spendBadgePoints();
-
 		goToLaneWithBestTarget(level);
 
 		attemptRespawn();
@@ -433,15 +434,23 @@ function MainLoop() {
 			refreshPlayerData();
 		}
 
-		useAutoUpgrade();
-		useAutoPurchaseAbilities();
+		// only AutoUpgrade after we've spend all badge points
+		if(s().m_rgPlayerTechTree) {
+			if(s().m_rgPlayerTechTree.badge_points === 0) {
+				useAutoUpgrade();
+				useAutoPurchaseAbilities();
+			}
+			else {
+				useAutoBadgePurchase();
+			}
+		}
 
 		var absoluteCurrentClickRate = 0;
 
 		if(currentClickRate > 0) {
 			var levelRainingMod = level % CONTROL.rainingRounds;
 
-			absoluteCurrentClickRate = level > CONTROL.goldholeThreshold && (levelRainingMod === 0 || 3 >= (CONTROL.rainingRounds - levelRainingMod)) ? 0 : currentClickRate;
+			absoluteCurrentClickRate = level > CONTROL.speedThreshold && (levelRainingMod === 0 || 3 >= (CONTROL.rainingRounds - levelRainingMod)) ? 0 : currentClickRate;
 
 			// throttle back as we approach
 			for(var i = 1; i <= 3; i++) {
@@ -518,6 +527,52 @@ function MainLoop() {
 	}
 }
 
+function useAutoBadgePurchase() {
+	if(!enableAutoBadgePurchase) { return; }
+
+	// id = ability
+	// ratio = how much of the remaining badges to spend
+	var abilityPriorityList = [
+		{ id: ABILITIES.WORMHOLE,   ratio: 1 },
+		{ id: ABILITIES.LIKE_NEW,   ratio: 1 },
+		{ id: ABILITIES.CRIT,       ratio: 1 },
+		{ id: ABILITIES.TREASURE,   ratio: 1 },
+		{ id: ABILITIES.PUMPED_UP,  ratio: 1 },
+	];
+
+	var badgePoints = s().m_rgPlayerTechTree.badge_points;
+	var abilityData = s().m_rgTuningData.abilities;
+	var abilityPurchaseQueue = [];
+
+	for (var i = 0; i < abilityPriorityList.length; i++) {
+		var id = abilityPriorityList[i].id;
+		var ratio = abilityPriorityList[i].ratio;
+		var cost = abilityData[id].badge_points_cost;
+		var portion = parseInt(badgePoints * ratio);
+		badgePoints -= portion;
+
+		while(portion >= cost) {
+			abilityPurchaseQueue.push(id);
+			portion -= cost;
+		}
+
+		badgePoints += portion;
+	}
+
+	s().m_rgPurchaseItemsQueue = s().m_rgPurchaseItemsQueue.concat(abilityPurchaseQueue);
+	s().m_UI.UpdateSpendBadgePointsDialog();
+}
+
+function toggleAutoBadgePurchase(event) {
+	var value = enableAutoBadgePurchase;
+
+	if(event !== undefined) {
+		value = handleCheckBox(event);
+	}
+
+	enableAutoBadgePurchase = value;
+}
+
 function useAllAbilities() {
 	for(var key in ABILITIES) {
 		if(ABILITIES[key] == ABILITIES.WORMHOLE) { continue; }
@@ -546,6 +601,7 @@ function useAutoPurchaseAbilities() {
 }
 
 var autoupgrade_update_hilight = true;
+var autoupgrade_hp_threshold = 0;
 
 function useAutoUpgrade() {
 	if(!enableAutoUpgradeDPS
@@ -572,15 +628,23 @@ function useAutoUpgrade() {
 	];
 	if(enableAutoUpgradeElemental && ELEMENTS.LockedElement !== -1) { upg_order.push(ELEMENTS.LockedElement+3); }
 	var upg_map = {};
-
 	upg_order.forEach(function(i) { upg_map[i] = {}; });
-	var gData = s().m_rgGameData;
 	var pData = s().m_rgPlayerData;
 	var pTree = s().m_rgPlayerTechTree;
 	var cache = s().m_UI.m_rgElementCache;
+
+	// calculate hp threshold based on mob dps
+	var mob = s().m_rgEnemies[0];
+	if(!!mob) {
+		var threshold = mob.m_data.dps * 300 * 2.5;
+		if(threshold > autoupgrade_hp_threshold) {
+			autoupgrade_hp_threshold = threshold;
+		}
+	}
+
 	var upg_enabled = [
 		enableAutoUpgradeClick,
-		enableAutoUpgradeHP && pTree.max_hp < Math.max(300000, gData.level * 30),
+		enableAutoUpgradeHP && pTree.max_hp < Math.max(100000, autoupgrade_hp_threshold),
 		enableAutoUpgradeDPS,
 	];
 
@@ -1223,13 +1287,6 @@ function goToLaneWithBestTarget(level) {
 		BOSS_DISABLED_ABILITIES.forEach(enableAbility);
 	}
 
-	// Always disable wormhole on lower levels
-	if(level < CONTROL.speedThreshold) {
-		disableAbility(ABILITIES.WORMHOLE);
-	} else {
-		enableAbility(ABILITIES.WORMHOLE);
-	}
-
 	// Disable raining gold for the first levels
 	if(level < CONTROL.rainingRounds) {
 		disableAbility(ABILITIES.RAINING_GOLD);
@@ -1304,16 +1361,25 @@ function useAbilities(level)
 	var levelRainingMod = level % CONTROL.rainingRounds;
 
 	// Wormhole
-	if(level > CONTROL.goldholeThreshold && levelRainingMod === 0) {
+	if(level > CONTROL.speedThreshold && levelRainingMod === 0) {
+		enableAbility(ABILITIES.WORMHOLE);
+		enableAbility(ABILITIES.LIKE_NEW);
+
 		advLog('Trying to trigger cooldown and wormhole...', 1);
 
 		tryUsingAbility(ABILITIES.DECREASE_COOLDOWNS, true);
 		tryUsingAbility(ABILITIES.WORMHOLE);
 		tryUsingAbility(ABILITIES.RAINING_GOLD);
-		tryUsingAbility(ABILITIES.LIKE_NEW, true);
+
+		if(Math.random() <= 0.2) {
+			tryUsingAbility(ABILITIES.LIKE_NEW, true);
+		}
 
 		// Exit right now so we don't use any other abilities after wormhole
 		return;
+	} else {
+		disableAbility(ABILITIES.WORMHOLE);
+		disableAbility(ABILITIES.LIKE_NEW);
 	}
 
 	// Skip doing any damage x levels before upcoming wormhole round
@@ -1848,28 +1914,6 @@ function updateLevelInfoTitle(level)
 
 	ELEMENTS.ExpectedLevel.textContent = 'Level: ' + level + ', Expected Level: ' + exp_lvl.expected_level + ', Likely Level: ' + exp_lvl.likely_level;
 	ELEMENTS.RemainingTime.textContent = 'Remaining Time: ' + rem_time.hours + ' hours, ' + rem_time.minutes + ' minutes.';
-}
-
-function badgePurchase(ability) {
-	g_Minigame.m_CurrentScene.TrySpendBadgePoints($J('#purchase_abilityitem_' + ability.toString()));
-}
-
-function spendBadgePoints() {
-	var badgePoints = g_Minigame.m_CurrentScene.m_rgPlayerTechTree.badge_points;
-	if (badgePoints > 0) {
-	  var limit = 500;
-	  while (badgePoints > 0 && limit-- > 0) {
-			if (badgePoints > 100) {
-				badgePurchase(ABILITIES.WORMHOLE);
-			} else if (badgePoints > 10) {
-				badgePurchase(ABILITIES.CRIT);
-			} else if (badgePoints > 2) {
-				badgePurchase(ABILITIES.TREASURE);
-			} else {
-				badgePurchase(ABILITIES.PUMPED_UP);
-			}
-		}
-	}
 }
 
 }(window));
