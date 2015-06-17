@@ -1842,14 +1842,14 @@ function badgePurchase(ability) {
 
 function spendBadgePoints() {
 	if (g_Minigame.m_CurrentScene.m_rgPlayerTechTree.badge_points > 0) {
-	  var limit = 20;
+	  var limit = 1000;
 	  while (g_Minigame.m_CurrentScene.m_rgPlayerTechTree.badge_points > 0 && limit-- > 0) {
 			if (g_Minigame.m_CurrentScene.m_rgPlayerTechTree.badge_points > 100) {
 				badgePurchase(ABILITIES.WORMHOLE);
 			} else if (g_Minigame.m_CurrentScene.m_rgPlayerTechTree.badge_points > 10) {
 				badgePurchase(ABILITIES.CRIT);
 			} else {
-				badgePurchase(ABILITIES.GOD_MODE);
+				badgePurchase(ABILITIES.PUMPED_UP);
 			}
 		}
 	}
