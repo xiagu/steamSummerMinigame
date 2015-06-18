@@ -679,7 +679,7 @@ function useAbilitiesAt100() {
 		advLog("At level % 100 = 0, forcing the use of wormholes nonstop", 2);
 		w.SteamDB_Wormhole_Timer = w.setInterval(function(){
 			if (bHaveItem(ABILITIES.WORMHOLE)) triggerAbility(ABILITIES.WORMHOLE); //wormhole
-		}, 250);
+		}, 500);
 	}
 	
 	if (likeNewOn100) {
