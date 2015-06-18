@@ -1757,7 +1757,12 @@ function tryUsingAbility(itemId, checkInLane, forceAbility) {
 }
 
 function triggerAbility(abilityId) {
-	s().m_rgAbilityQueue.push({'ability': abilityId});
+	if (abilityId === ABILITIES.WORMHOLE) {
+		// Fire this bad boy off immediately
+		g_Server.UseAbilities($J.noop, $J.noop, {requested_abilities: [{ability: ABILITIES.WORMHOLE}]})
+	} else {
+		s().m_rgAbilityQueue.push({'ability': abilityId});
+	}
 
 	var nCooldownDuration = s().m_rgTuningData.abilities[abilityId].cooldown;
 	s().ClientOverride('ability', abilityId, Math.floor(Date.now() / 1000) + nCooldownDuration);
