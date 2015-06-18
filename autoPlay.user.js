@@ -2,7 +2,7 @@
 // @name Ye Olde Megajump
 // @namespace https://github.com/Sekioh/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.  Now with megajump.  Brought to you by the Ye Olde Wormhole Schemers and DannyDaemonic
-// @version 4.8.9
+// @version 4.8.9.2
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -167,29 +167,16 @@ var GAME_STATUS = {
 disableParticles();
 
 if(!getPreferenceBoolean("alertShown", false)) {
-	w.ShowConfirmDialog(
-		'Welcome to the Monster Minigame Wormhole Warp (MMWW) Script',
+	w.ShowAlertDialog(
+		'Ye Olde Megajump',
 
 		'<div style="color:#FF5252">This dialog will be shown just once, so please read through it.<br><br></div>' +
 		'<h3 style="color:yellow">This script does not lag your game,<br>we are limiting it to 1 frame per second to lower CPU usage.</h3>' +
 		'<p>We have multiple options to configure this script, and disabling FPS limiter is one of them.</p>' +
-		'<p><a href="https://github.com/DannyDaemonic/MonsterMinigameWormholeWarp" target="_blank">You can report issues on GitHub</a></p>' +
-		'<p>Thanks and have fun!</p>',
-
-		'Disable FPS limiter',
-		'Go away'
-	).fail(function() {
+		'<p><a href="https://github.com/Sekioh/MonsterMinigameWormholeWarp" target="_blank">You can report issues on GitHub</a></p>' +
+		'<p>Thanks and have fun!</p>'
+	).done(function(strButton) {
 		setPreference("alertShown", true);
-	}).done(function(strButton) {
-		setPreference("alertShown", true);
-
-		if(strButton === 'OK') {
-			disableRenderer = false;
-
-			if(isPastFirstRun) {
-				toggleRenderer();
-			}
-		}
 	});
 }
 
@@ -482,7 +469,6 @@ function MainLoop() {
 		isAlreadyRunning = true;
 		
 		if (level % 100 == 0 ) {
-
 			/*
 			This section has been commented out intentionally, it is here should we ever choose to implement this feature.
 			This is not currently working.
@@ -505,13 +491,11 @@ function MainLoop() {
 				s().TryChangeLane(0); // put everyone in the same lane
 			}
 			*/
-		
-			s().TryChangeLane(0); // put everyone in the same lane
-			
+
+			goToLaneWithBestTarget(level);
 		} else {
 			goToLaneWithBestTarget(level);
 		}
-
 
 		attemptRespawn();
 
@@ -543,8 +527,6 @@ function MainLoop() {
 			}
 		}
 
-		
-		
 		var absoluteCurrentClickRate = 0;
 
 		if(currentClickRate > 0) {
