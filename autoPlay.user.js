@@ -198,7 +198,7 @@ function s() {
 }
 
 function firstRun() {
-	advLog("Starting WWMM Script.", 1);
+	advLog("Starting YOWH Script.", 1);
 
 	trt_oldCrit = s().DoCritEffect;
 	trt_oldPush = s().m_rgClickNumbers.push;
@@ -481,13 +481,44 @@ function MainLoop() {
 	if (!isAlreadyRunning) {
 		isAlreadyRunning = true;
 		
-		goToLaneWithBestTarget(level);
+		if (level % 100 == 0 ) {
+
+			/*
+			This section has been commented out intentionally, it is here should we ever choose to implement this feature.
+			This is not currently working.
+			It was going to swap to lane 1, then check if there was a boss there.  If so, change to lane 2.
+			Didnt want to be changing lanes forever.
+			Staying in the boss lane is fine, assuming no one using the script is clicking
+			Considered checking flags in various ways to see if had already done this check that level
+			
+			if( s().m_rgPlayerData.current_lane == 0 ) {
+				enemyData = s().GetEnemy(s().m_rgPlayerData.current_lane, s().m_rgPlayerData.target).m_data;
+					if(typeof enemyData !== "undefined"){
+						var enemyType = enemyData.type;
+						if(enemyType == ENEMY_TYPE.BOSS) {
+							advLog('In lane one, there is a boss, moving', 4);
+							s().TryChangeLane(1);
+						}
+					}	
+			
+			} else{
+				s().TryChangeLane(0); // put everyone in the same lane
+			}
+			*/
++		
+			s().TryChangeLane(0); // put everyone in the same lane
+			
+		} else {
++			goToLaneWithBestTarget(level);
++		}
+
 
 		attemptRespawn();
 
 		var timeLeft = getTimeleft(); // Time left in minutes
-
-		if(timeLeft <= 15) {
+		if(level % 100 = 0){
+			useAbilitiesAt100();
+		} else if(timeLeft <= 15) {
 			useAllAbilities();
 		} else {
 			useAbilities(level);
@@ -512,9 +543,6 @@ function MainLoop() {
 			}
 		}
 
-		if (level % 100 == 0) {
-			s().TryChangeLane(0); // put everyone in the same lane
-			useAbilitiesAt100(); //spam wormholes, like news, and medics appropriately
 		}
 		
 		var absoluteCurrentClickRate = 0;
@@ -653,6 +681,7 @@ function toggleAutoBadgePurchase(event) {
 function useAllAbilities() {
 	for(var key in ABILITIES) {
 		if(ABILITIES[key] == ABILITIES.WORMHOLE) { continue; }
+		if(ABILITIES[key] == ABILITIES.LIKE_NEW) { continue; }
 		tryUsingAbility(ABILITIES[key]);
 	}
 }
@@ -662,17 +691,17 @@ function useAbilitiesAt100() {
 
 	if (wormholeOn100) {
 		advLog("At level % 100 = 0, forcing the use of a wormhole", 2)
-		tryUsingAbility(ABILITIES.WORMHOLE, true, true); //wormhole
+		tryUsingAbility(ABILITIES.WORMHOLE, false, true); //wormhole
 	}
 	
 	if (likeNewOn100) {
 		advLog("At level % 100 = 0, forcing the use of a like new", 2)
-		tryUsingAbility(ABILITIES.LIKE_NEW, true, true); //like new
+		tryUsingAbility(ABILITIES.LIKE_NEW, false, true); //like new
 	}
 	
 	if (medicOn100) {
 		advLog("At level % 100 = 0, forcing the use of a medic", 2)
-		tryUsingAbility(ABILITIES.MEDICS, true, true); //medics
+		tryUsingAbility(ABILITIES.MEDICS, false, true); //medics
 	}
 }
 
