@@ -51,6 +51,10 @@ var autoRefreshMinutes = 30;
 var autoRefreshMinutesRandomDelay = 10;
 var autoRefreshSecondsCheckLoadedDelay = 30;
 
+// Tick check
+var lastTime = 0;
+var outOfSyncTicks = 0;
+
 // DO NOT MODIFY
 var isPastFirstRun = false;
 var isAlreadyRunning = false;
@@ -467,6 +471,16 @@ function MainLoop() {
 	if (!isAlreadyRunning) {
 		isAlreadyRunning = true;
 		
+		// Checking if still getting update
+		if (lastTime == s().m_nTime)
+		{
+			outOfSyncTicks++;
+			if (outOfSyncTicks > 1) advLog("Maybe out of sync, stop action.", 1);
+		}
+		else
+			outOfSyncTicks = 0;
+		lastTime = s().m_nTime;
+		
 		if (level % 100 == 0 ) {
 			/*
 			This section has been commented out intentionally, it is here should we ever choose to implement this feature.
@@ -496,27 +510,30 @@ function MainLoop() {
 			goToLaneWithBestTarget(level);
 		}
 		
-		if( level !== lastLevel ) {
-			// Clear any unsent abilities still in the queue when our level changes
-			s().m_rgAbilityQueue.clear();
-		}
-
 		attemptRespawn();
 
 		if (level % 100 !== 0 && w.SteamDB_Wormhole_Timer) {
 			w.clearInterval(w.SteamDB_Wormhole_Timer);
 			w.SteamDB_Wormhole_Timer = false;
 		}
-
-		var timeLeft = getTimeleft(); // Time left in minutes
-		if(level % 100 == 0){
-			useAbilitiesAt100();
-		} else if(timeLeft <= 15) {
-			useAllAbilities();
-		} else {
-			useAbilities(level);
+		
+		if( level !== lastLevel || outOfSyncTicks > 1) {
+			// Clear any unsent abilities still in the queue when our level changes
+			s().m_rgAbilityQueue.clear();
 		}
-
+		
+		var timeLeft = getTimeleft(); // Time left in minutes
+		if (outOfSyncTicks < 2)
+		{
+			if(level % 100 == 0){
+				useAbilitiesAt100();
+			} else if(timeLeft <= 15) {
+				useAllAbilities();
+			} else {
+				useAbilities(level);
+			}
+		}
+		
 		updatePlayersInGame();
 
 		if( level !== lastLevel ) {
