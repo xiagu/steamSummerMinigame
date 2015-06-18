@@ -35,6 +35,7 @@ var removeCritText = getPreferenceBoolean("removeCritText", false);
 var removeAllText = getPreferenceBoolean("removeAllText", false);
 var enableFingering = getPreferenceBoolean("enableFingering", true);
 var disableRenderer = getPreferenceBoolean("disableRenderer", true);
+var enableTrollTrack = getPreferenceBoolean("enableTrollTrack", false);
 
 var enableElementLock = getPreferenceBoolean("enableElementLock", true);
 
@@ -283,6 +284,65 @@ function firstRun() {
 		document.body.style.backgroundPosition = "0 0";
 	}
 
+	CUI.prototype.UpdateLog = function( rgLaneLog ) {
+		var abilities = this.m_Game.m_rgTuningData.abilities;
+		var level = s().m_rgGameData.level + 1;
+
+		if( !this.m_Game.m_rgPlayerTechTree ) return;
+
+		var nHighestTime = 0;
+
+		for( var i=rgLaneLog.length-1; i >= 0; i--) {
+			var rgEntry = rgLaneLog[i];
+
+			if( isNaN( rgEntry.time ) ) rgEntry.time = this.m_nActionLogTime + 1;
+
+			if( rgEntry.time <= this.m_nActionLogTime ) continue;
+
+			switch( rgEntry.type ) {
+				case 'ability':
+					if (window.enableTrollTrack) {
+						if ( (level % 100 !== 0 && [26].indexOf(rgEntry.ability) > -1) || (level % 100 === 0 && [10, 11, 12, 15, 20].indexOf(rgEntry.ability) > -1) ) {
+							var ele = this.m_eleUpdateLogTemplate.clone();
+							$J(ele).data('abilityid', rgEntry.ability);
+							$J('.name', ele).text(rgEntry.actor_name).attr("style", "color: red; font-weight: bold;");
+							$J('.ability', ele).text(abilities[rgEntry.ability].name + " on level " + level);
+							$J('img', ele).attr('src', g_rgIconMap['ability_' + rgEntry.ability].icon);
+
+							$J(ele).v_tooltip({tooltipClass: 'ta_tooltip', location: 'top'});
+
+							this.m_eleUpdateLogContainer[0].insertBefore(ele[0], this.m_eleUpdateLogContainer[0].firstChild);
+						
+							advLog(rgEntry.actor_name + " used " + s().m_rgTuningData.abilities[ rgEntry.ability ].name + " on level " + level, 1);
+						}
+					} else {
+						var ele = this.m_eleUpdateLogTemplate.clone();
+						$J(ele).data('abilityid', rgEntry.ability);
+						$J('.name', ele).text(rgEntry.actor_name);
+						$J('.ability', ele).text(abilities[rgEntry.ability].name);
+						$J('img', ele).attr('src', g_rgIconMap['ability_' + rgEntry.ability].icon);
+
+						$J(ele).v_tooltip({tooltipClass: 'ta_tooltip', location: 'top'});
+
+						this.m_eleUpdateLogContainer[0].insertBefore(ele[0], this.m_eleUpdateLogContainer[0].firstChild);
+					}
+					break;
+				default:
+					console.log("Unknown action log type: %s", rgEntry.type);
+					console.log(rgEntry);
+			}
+
+			if(rgEntry.time > nHighestTime) nHighestTime = rgEntry.time;
+		}
+
+		if( nHighestTime > this.m_nActionLogTime ) this.m_nActionLogTime = nHighestTime;
+
+		var e = this.m_eleUpdateLogContainer[0];
+		while(e.children.length > 20 ) {
+			e.children[e.children.length-1].remove();
+		}
+	}
+
 	// Add "players in game" label
 	var titleActivity = document.querySelector( '.title_activity' );
 	var playersInGame = document.createElement( 'span' );
@@ -325,6 +385,7 @@ function firstRun() {
 	}
 
 	options2.appendChild(makeCheckBox("enableFingering", "Enable targeting pointer", enableFingering, toggleFingering, false));
+	options2.appendChild(makeCheckBox("enableTrollTrack", "Enable tracking trolls", enableTrollTrack, toggleTrackTroll, false));
 	options2.appendChild(makeNumber("setLogLevel", "Change the log level (you shouldn't need to touch this)", logLevel, 0, 5, updateLogLevel));
 
 	info_box.appendChild(options2);
@@ -998,6 +1059,14 @@ function toggleAllText(event) {
 		};
 	} else {
 		s().m_rgClickNumbers.push = trt_oldPush;
+	}
+}
+
+function toggleTrackTroll(event) {
+	var value = enableTrollTrack;
+
+	if(event !== undefined) {
+		value = handleCheckBox(event);
 	}
 }
 
