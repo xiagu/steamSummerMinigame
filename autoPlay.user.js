@@ -22,7 +22,7 @@ var logLevel = 1; // 5 is the most verbose, 0 disables all log
 var enableAutoClicker = getPreferenceBoolean("enableAutoClicker", true);
 
 var enableAutoUpgradeHP = getPreferenceBoolean("enableAutoUpgradeHP", true);
-var enableAutoUpgradeClick = getPreferenceBoolean("enableAutoUpgradeClick", false);
+var enableAutoUpgradeClick = getPreferenceBoolean("enableAutoUpgradeClick", true);
 var enableAutoUpgradeDPS = getPreferenceBoolean("enableAutoUpgradeDPS", false);
 var enableAutoUpgradeElemental = getPreferenceBoolean("enableAutoUpgradeElemental", false);
 var enableAutoPurchase = getPreferenceBoolean("enableAutoPurchase", false);
@@ -1010,7 +1010,7 @@ function updateLogLevel(event) {
 function setPreference(key, value) {
 	try {
 		if(localStorage !== 'undefined') {
-			localStorage.setItem('steamdb-minigame/' + key, value);
+			localStorage.setItem('steamdb-minigame-wormholers/' + key, value);
 		}
 	} catch (e) {
 		console.log(e); // silently ignore error
@@ -1020,7 +1020,7 @@ function setPreference(key, value) {
 function getPreference(key, defaultValue) {
 	try {
 		if(localStorage !== 'undefined') {
-			var result = localStorage.getItem('steamdb-minigame/' + key);
+			var result = localStorage.getItem('steamdb-minigame-wormholers/' + key);
 			return (result !== null ? result : defaultValue);
 		}
 	} catch (e) {
