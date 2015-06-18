@@ -472,14 +472,20 @@ function MainLoop() {
 		isAlreadyRunning = true;
 		
 		// Checking if still getting update
-		if (lastTime == s().m_nTime)
-		{
+		var skipAction = false;
+		if (lastTime == s().m_nTime) {
 			outOfSyncTicks++;
-			if (outOfSyncTicks > 1) advLog("Maybe out of sync, stop action.", 1);
+			if (outOfSyncTicks > 1)
+			{
+				advLog("Update failed, stop action.", 1);
+				skipAction = true;
+			}
 		}
-		else
+		else { outOfSyncTicks = 0; }
+		if (s().m_nTime < (s().m_nLocalTime / 1000) - 4)
 		{
-			outOfSyncTicks = 0;
+			advLog("Maybe out of sync, stop action.", 1);
+			skipAction = true;
 		}
 		lastTime = s().m_nTime;
 		
@@ -519,13 +525,13 @@ function MainLoop() {
 			w.SteamDB_Wormhole_Timer = false;
 		}
 		
-		if( level !== lastLevel || outOfSyncTicks > 1) {
+		if( level !== lastLevel || skipAction) {
 			// Clear any unsent abilities still in the queue when our level changes
 			s().m_rgAbilityQueue.clear();
 		}
 		
 		var timeLeft = getTimeleft(); // Time left in minutes
-		if (outOfSyncTicks < 2)
+		if (!skipAction)
 		{
 			if(level % 100 == 0){
 				useAbilitiesAt100();
