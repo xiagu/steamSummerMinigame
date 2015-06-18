@@ -53,7 +53,7 @@ This fork has:
 ### Manual ###
 
 ##### Chrome #####
-1. Open https://github.com/YeOldeWHc/MonsterMinigameWormholeWarp/raw/master/autoPlay.user.js
+1. Open https://github.com/YeOldeWH/MonsterMinigameWormholeWarp/raw/master/autoPlay.user.js
 2. Select All, Copy.
 3. Navigate to `http://steamcommunity.com/minigame/` and join or start a game.
 4. Press `Ctrl + Shift + J`.
