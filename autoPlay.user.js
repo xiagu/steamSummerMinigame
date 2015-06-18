@@ -22,6 +22,8 @@ var logLevel = 1; // 5 is the most verbose, 0 disables all log
 var wormholeOn100 = 1;
 var likeNewOn100 = 0;
 var medicOn100 = 1;
+var clicksOnBossLevel = 0;
+var upgThreshold = 100;
 
 var enableAutoClicker = getPreferenceBoolean("enableAutoClicker", true);
 
@@ -525,9 +527,14 @@ function MainLoop() {
 			// throttle back as we approach
 			for(var i = 1; i <= 3; i++) {
 				if(levelRainingMod > CONTROL.rainingRounds - i) {
-					absoluteCurrentClickRate = Math.round(absoluteCurrentClickRate / 2);
+					absoluteCurrentClickRate = Math.round(absoluteCurrentClickRate / 10);
 				}
 			}
+			//If at the boss level, dont click at all
+			if (level % CONTROL.rainingRounds == 0) {
+				absoluteCurrentClickRate = clicksOnBossLevel;
+			}
+			
 			s().m_nClicks += absoluteCurrentClickRate;
 		}
 
@@ -603,11 +610,11 @@ function useAutoBadgePurchase() {
 	// id = ability
 	// ratio = how much of the remaining badges to spend
 	var abilityPriorityList = [
-		{ id: ABILITIES.WORMHOLE,   ratio: 0.95 },
-		{ id: ABILITIES.LIKE_NEW,   ratio: 1 },
+		{ id: ABILITIES.WORMHOLE,   ratio: 1 },
+		{ id: ABILITIES.LIKE_NEW,   ratio: 0 },
 		{ id: ABILITIES.CRIT,       ratio: 1 },
 		{ id: ABILITIES.TREASURE,   ratio: 1 },
-		{ id: ABILITIES.PUMPED_UP,  ratio: 1 },
+		{ id: ABILITIES.PUMPED_UP,  ratio: 0 },
 	];
 
 	var badgePoints = s().m_rgPlayerTechTree.badge_points;
@@ -732,9 +739,9 @@ function useAutoUpgrade() {
 	}
 
 	var upg_enabled = [
-		enableAutoUpgradeClick,
+		enableAutoUpgradeClick && s().m_rgGameData.level > upgThreshold,
 		enableAutoUpgradeHP && pTree.max_hp < Math.max(100000, autoupgrade_hp_threshold),
-		enableAutoUpgradeDPS,
+		enableAutoUpgradeDPS && s().m_rgGameData.level > upgThreshold,
 	];
 
 	// loop over all upgrades and find the most cost effective ones
