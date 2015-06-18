@@ -2,7 +2,7 @@
 // @name Ye Olde Megajump
 // @namespace https://github.com/YeOldeWH/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.  Now with megajump.  Brought to you by the Ye Olde Wormhole Schemers and DannyDaemonic
-// @version 4.9.0.2
+// @version 5.0.0.2
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -698,7 +698,7 @@ function useAbilitiesAt100() {
 				return;
 			}
 			if (bHaveItem(ABILITIES.WORMHOLE)) triggerAbility(ABILITIES.WORMHOLE); //wormhole
-		}, 100);	// 10 req's / s seems to be the max for wormholes
+		}, 50);	// 20 requests per second, because FUCK YOU STEAM.
 	}
 	
 	if (likeNewOn100) {
