@@ -698,7 +698,7 @@ function useAbilitiesAt100() {
 				return;
 			}
 			if (bHaveItem(ABILITIES.WORMHOLE)) triggerAbility(ABILITIES.WORMHOLE); //wormhole
-		}, 50);	// 20 requests per second, because FUCK YOU STEAM.
+		}, 100);
 	}
 	
 	if (likeNewOn100) {
