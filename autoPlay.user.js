@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name Monster Minigame Wormhole Warp (MMWW)TEST
+// @name Monster Minigame Wormhole Warp (MMWW)
 // @namespace https://github.com/DannyDaemonic/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.
 // @version 4.8.8.2
