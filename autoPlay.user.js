@@ -495,6 +495,11 @@ function MainLoop() {
 		} else {
 			goToLaneWithBestTarget(level);
 		}
+		
+		if( level !== lastLevel ) {
+			// Clear any unsent abilities still in the queue when our level changes
+			s().m_rgAbilityQueue.clear();
+		}
 
 		attemptRespawn();
 
