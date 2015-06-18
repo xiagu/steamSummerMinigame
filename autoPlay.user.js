@@ -478,7 +478,9 @@ function MainLoop() {
 			if (outOfSyncTicks > 1) advLog("Maybe out of sync, stop action.", 1);
 		}
 		else
+		{
 			outOfSyncTicks = 0;
+		}
 		lastTime = s().m_nTime;
 		
 		if (level % 100 == 0 ) {
