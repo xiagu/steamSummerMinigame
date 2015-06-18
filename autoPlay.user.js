@@ -1744,7 +1744,7 @@ function canUseAbility(abilityId, forceAbility) {
 }
 
 function tryUsingAbility(itemId, checkInLane, forceAbility) {
-	if (!canUseAbility(itemId), forceAbility) {
+	if (!canUseAbility(itemId, forceAbility)) {
 		return false;
 	}
 
