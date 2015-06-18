@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name Ye Olde Megajump
-// @namespace https://github.com/Sekioh/MonsterMinigameWormholeWarp
+// @namespace https://github.com/YeOldeWH/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.  Now with megajump.  Brought to you by the Ye Olde Wormhole Schemers and DannyDaemonic
 // @version 4.8.9.2
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
-// @updateURL https://raw.githubusercontent.com/Sekioh/MonsterMinigameWormholeWarp/master/autoPlay.user.js
-// @downloadURL https://raw.githubusercontent.com/Sekioh/MonsterMinigameWormholeWarp/master/autoPlay.user.js
+// @updateURL https://raw.githubusercontent.com/YeOldeWH/MonsterMinigameWormholeWarp/master/autoPlay.user.js
+// @downloadURL https://raw.githubusercontent.com/YeOldeWH/MonsterMinigameWormholeWarp/master/autoPlay.user.js
 // ==/UserScript==
 
 // IMPORTANT: Update the @version property above to a higher number such as 1.1 and 1.2 when you update the script! Otherwise, Tamper / Greasemonkey users will not update automatically.
@@ -173,7 +173,7 @@ if(!getPreferenceBoolean("alertShown", false)) {
 		'<div style="color:#FF5252">This dialog will be shown just once, so please read through it.<br><br></div>' +
 		'<h3 style="color:yellow">This script does not lag your game,<br>we are limiting it to 1 frame per second to lower CPU usage.</h3>' +
 		'<p>We have multiple options to configure this script, and disabling FPS limiter is one of them.</p>' +
-		'<p><a href="https://github.com/Sekioh/MonsterMinigameWormholeWarp" target="_blank">You can report issues on GitHub</a></p>' +
+		'<p><a href="https://github.com/YeOldeWH/MonsterMinigameWormholeWarp" target="_blank">You can report issues on GitHub</a></p>' +
 		'<p>Thanks and have fun!</p>'
 	).done(function(strButton) {
 		setPreference("alertShown", true);
