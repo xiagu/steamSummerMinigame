@@ -19,6 +19,10 @@
 var clickRate = 20;
 var logLevel = 1; // 5 is the most verbose, 0 disables all log
 
+var wormholeOn100 = 1;
+var likeNewOn100 = 0;
+var medicOn100 = 1;
+
 var enableAutoClicker = getPreferenceBoolean("enableAutoClicker", true);
 
 var enableAutoUpgradeHP = getPreferenceBoolean("enableAutoUpgradeHP", true);
@@ -506,6 +510,11 @@ function MainLoop() {
 			}
 		}
 
+		if (level % 100 == 0) {
+			s().TryChangeLane(0); // put everyone in the same lane
+			useAbilitiesAt100(); //spam wormholes, like news, and medics appropriately
+		}
+		
 		var absoluteCurrentClickRate = 0;
 
 		if(currentClickRate > 0) {
@@ -638,6 +647,25 @@ function useAllAbilities() {
 	for(var key in ABILITIES) {
 		if(ABILITIES[key] == ABILITIES.WORMHOLE) { continue; }
 		tryUsingAbility(ABILITIES[key]);
+	}
+}
+
+//at level 100 spam WH, Like New, and medics, based on your role
+function useAbilitiesAt100() {
+
+	if (wormholeOn100) {
+		advLog("At level % 100 = 0, forcing the use of a wormhole", 2)
+		tryUsingAbility(ABILITIES.WORMHOLE, true, true); //wormhole
+	}
+	
+	if (likeNewOn100) {
+		advLog("At level % 100 = 0, forcing the use of a like new", 2)
+		tryUsingAbility(ABILITIES.LIKE_NEW, true, true); //like new
+	}
+	
+	if (medicOn100) {
+		advLog("At level % 100 = 0, forcing the use of a medic", 2)
+		tryUsingAbility(ABILITIES.MEDICS, true, true); //medics
 	}
 }
 
@@ -1689,16 +1717,16 @@ function bHaveItem(itemId) {
 	return false;
 }
 
-function canUseAbility(abilityId) {
+function canUseAbility(abilityId, forceAbility) {
 	if(!s().bHaveAbility(abilityId) && !bHaveItem(abilityId)) {
 		return false;
 	}
 
-	return s().GetCooldownForAbility(abilityId) <= 0 && isAbilityEnabled(abilityId);
+	return s().GetCooldownForAbility(abilityId) <= 0 && (isAbilityEnabled(abilityId) || forceAbility );
 }
 
-function tryUsingAbility(itemId, checkInLane) {
-	if (!canUseAbility(itemId)) {
+function tryUsingAbility(itemId, checkInLane, forceAbility) {
+	if (!canUseAbility(itemId), forceAbility) {
 		return false;
 	}
 
