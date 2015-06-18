@@ -1583,7 +1583,7 @@ function useAbilities(level)
 	}
 
 	// Tactical Nuke
-	if(canUseAbility(ABILITIES.TACTICAL_NUKE)) {
+	if(canUseAbility(ABILITIES.TACTICAL_NUKE) && (level % 100 !== 0) && (level % 100) <= 97) {
 		enemy = s().GetEnemy(s().m_rgPlayerData.current_lane, s().m_rgPlayerData.target);
 		// check whether current target is a boss
 		if (enemy && enemy.m_data.type == ENEMY_TYPE.BOSS) {
