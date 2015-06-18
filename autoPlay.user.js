@@ -464,7 +464,6 @@ function MainLoop() {
 
 	var level = s().m_rgGameData.level + 1;
 
-
 	if (!isAlreadyRunning) {
 		isAlreadyRunning = true;
 		
@@ -498,6 +497,11 @@ function MainLoop() {
 		}
 
 		attemptRespawn();
+
+		if (level % 100 !== 0 && w.SteamDB_Wormhole_Timer) {
+			w.clearInterval(w.SteamDB_Wormhole_Timer);
+			w.SteamDB_Wormhole_Timer = false;
+		}
 
 		var timeLeft = getTimeleft(); // Time left in minutes
 		if(level % 100 == 0){
@@ -671,18 +675,20 @@ function useAllAbilities() {
 //at level 100 spam WH, Like New, and medics, based on your role
 function useAbilitiesAt100() {
 
-	if (wormholeOn100) {
-		advLog("At level % 100 = 0, forcing the use of a wormhole", 2)
-		tryUsingAbility(ABILITIES.WORMHOLE, false, true); //wormhole
+	if (wormholeOn100 && !w.SteamDB_Wormhole_Timer) {
+		advLog("At level % 100 = 0, forcing the use of wormholes nonstop", 2);
+		w.SteamDB_Wormhole_Timer = w.setInterval(function(){
+			if (bHaveItem(ABILITIES.WORMHOLE)) triggerAbility(ABILITIES.WORMHOLE); //wormhole
+		}, 250);
 	}
 	
 	if (likeNewOn100) {
-		advLog("At level % 100 = 0, forcing the use of a like new", 2)
+		advLog("At level % 100 = 0, forcing the use of a like new", 2);
 		tryUsingAbility(ABILITIES.LIKE_NEW, false, true); //like new
 	}
 	
 	if (medicOn100) {
-		advLog("At level % 100 = 0, forcing the use of a medic", 2)
+		advLog("At level % 100 = 0, forcing the use of a medic", 2);
 		tryUsingAbility(ABILITIES.MEDICS, false, true); //medics
 	}
 }
@@ -1740,7 +1746,7 @@ function canUseAbility(abilityId, forceAbility) {
 		return false;
 	}
 
-	return s().GetCooldownForAbility(abilityId) <= 0 && (isAbilityEnabled(abilityId) || forceAbility );
+	return s().GetCooldownForAbility(abilityId) <= 0 && (isAbilityEnabled(abilityId) || forceAbility);
 }
 
 function tryUsingAbility(itemId, checkInLane, forceAbility) {
