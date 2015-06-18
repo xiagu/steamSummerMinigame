@@ -505,12 +505,12 @@ function MainLoop() {
 				s().TryChangeLane(0); // put everyone in the same lane
 			}
 			*/
-+		
+		
 			s().TryChangeLane(0); // put everyone in the same lane
 			
 		} else {
-+			goToLaneWithBestTarget(level);
-+		}
+			goToLaneWithBestTarget(level);
+		}
 
 
 		attemptRespawn();
