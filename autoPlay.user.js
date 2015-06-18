@@ -2,7 +2,7 @@
 // @name Ye Olde Megajump
 // @namespace https://github.com/YeOldeWH/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.  Now with megajump.  Brought to you by the Ye Olde Wormhole Schemers and DannyDaemonic
-// @version 4.9.0
+// @version 4.9.0.1
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -515,6 +515,14 @@ function MainLoop() {
 		updatePlayersInGame();
 
 		if( level !== lastLevel ) {
+			if (level % 100 === 0) {
+				enableAbility(ABILITIES.WORMHOLE);
+				enableAbility(ABILITIES.LIKE_NEW);
+			} else {
+				disableAbility(ABILITIES.WORMHOLE);
+				disableAbility(ABILITIES.LIKE_NEW);
+			}
+
 			lastLevel = level;
 			updateLevelInfoTitle(level);
 			refreshPlayerData();
@@ -1481,26 +1489,11 @@ function useAbilities(level)
 
 	var levelRainingMod = level % CONTROL.rainingRounds;
 
-	// Wormhole
-	if(level > CONTROL.speedThreshold && levelRainingMod === 0) {
-		enableAbility(ABILITIES.WORMHOLE);
-		enableAbility(ABILITIES.LIKE_NEW);
-
-		advLog('Trying to trigger cooldown and wormhole...', 1);
+	if(levelRainingMod === 0) {
+		//advLog('Trying to rain and enable click after a while...', 1);
 
 		tryUsingAbility(ABILITIES.DECREASE_COOLDOWNS, true);
-		tryUsingAbility(ABILITIES.WORMHOLE);
 		tryUsingAbility(ABILITIES.RAINING_GOLD);
-
-		if(Math.random() <= 0.2) {
-			tryUsingAbility(ABILITIES.LIKE_NEW, true);
-		}
-
-		// Exit right now so we don't use any other abilities after wormhole
-		return;
-	} else {
-		disableAbility(ABILITIES.WORMHOLE);
-		disableAbility(ABILITIES.LIKE_NEW);
 	}
 
 	// Skip doing any damage x levels before upcoming wormhole round
