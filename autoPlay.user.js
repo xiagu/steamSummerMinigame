@@ -698,7 +698,7 @@ function useAbilitiesAt100() {
 				return;
 			}
 			if (bHaveItem(ABILITIES.WORMHOLE)) triggerAbility(ABILITIES.WORMHOLE); //wormhole
-		}, 500);
+		}, 100);	// 10 req's / s seems to be the max for wormholes
 	}
 	
 	if (likeNewOn100) {
@@ -1769,10 +1769,8 @@ function tryUsingAbility(itemId, checkInLane, forceAbility) {
 
 function triggerAbility(abilityId) {
 	if (abilityId === ABILITIES.WORMHOLE) {
-		// Fire this bad boy off immediately AND SEVEN TIMES PER CALL BECAUSE GET REKT VALVE
-		for (var i = 0; i < 7; i++) {
-			g_Server.UseAbilities($J.noop, $J.noop, {requested_abilities: [{ability: ABILITIES.WORMHOLE}]});
-		}
+		// Fire this bad boy off immediately 
+		g_Server.UseAbilities($J.noop, $J.noop, {requested_abilities: [{ability: ABILITIES.WORMHOLE}]});
 	} else {
 		s().m_rgAbilityQueue.push({'ability': abilityId});
 	}
