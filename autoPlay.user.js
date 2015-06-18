@@ -516,7 +516,7 @@ function MainLoop() {
 		attemptRespawn();
 
 		var timeLeft = getTimeleft(); // Time left in minutes
-		if(level % 100 = 0){
+		if(level % 100 == 0){
 			useAbilitiesAt100();
 		} else if(timeLeft <= 15) {
 			useAllAbilities();
@@ -543,7 +543,7 @@ function MainLoop() {
 			}
 		}
 
-		}
+		
 		
 		var absoluteCurrentClickRate = 0;
 
