@@ -1,13 +1,13 @@
 // ==UserScript==
-// @name Monster Minigame Wormhole Warp (MMWW)
-// @namespace https://github.com/DannyDaemonic/MonsterMinigameWormholeWarp
-// @description A script that runs the Steam Monster Minigame for you.
-// @version 4.8.8.2
+// @name Ye Olde Megajump
+// @namespace https://github.com/Sekioh/MonsterMinigameWormholeWarp
+// @description A script that runs the Steam Monster Minigame for you.  Now with megajump.  Brought to you by the Ye Olde Wormhole Schemers and DannyDaemonic
+// @version 4.8.9
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
-// @updateURL https://raw.githubusercontent.com/DannyDaemonic/MonsterMinigameWormholeWarp/master/autoPlay.user.js
-// @downloadURL https://raw.githubusercontent.com/DannyDaemonic/MonsterMinigameWormholeWarp/master/autoPlay.user.js
+// @updateURL https://raw.githubusercontent.com/Sekioh/MonsterMinigameWormholeWarp/master/autoPlay.user.js
+// @downloadURL https://raw.githubusercontent.com/Sekioh/MonsterMinigameWormholeWarp/master/autoPlay.user.js
 // ==/UserScript==
 
 // IMPORTANT: Update the @version property above to a higher number such as 1.1 and 1.2 when you update the script! Otherwise, Tamper / Greasemonkey users will not update automatically.
