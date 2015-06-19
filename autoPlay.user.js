@@ -2,7 +2,7 @@
 // @name Ye Olde Megajump
 // @namespace https://github.com/YeOldeWH/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.  Now with megajump.  Brought to you by the Ye Olde Wormhole Schemers and DannyDaemonic
-// @version 5.0.1.1
+// @version 5.0.1.2
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -622,14 +622,32 @@ function useAutoBadgePurchase() {
 
 	// id = ability
 	// ratio = how much of the remaining badges to spend
-	var abilityPriorityList = [
-		{ id: ABILITIES.WORMHOLE,   ratio: 1 },
-		{ id: ABILITIES.LIKE_NEW,   ratio: 0 },
-		{ id: ABILITIES.CRIT,       ratio: 1 },
-		{ id: ABILITIES.TREASURE,   ratio: 1 },
-		{ id: ABILITIES.PUMPED_UP,  ratio: 1 },
-	];
-
+	
+	//Note: this isn't an actual ratio, because badge points get reduced and the values don't add to 1
+	//For now, this is not a problem, but for stylistic reasons, should eventually be changed.
+	
+	//Regular users buy ratio
+	if(likeNewOn100 != 1){
+		var abilityPriorityList = [
+			{ id: ABILITIES.WORMHOLE,   ratio: 1 },
+			{ id: ABILITIES.LIKE_NEW,   ratio: 0 },
+			{ id: ABILITIES.CRIT,       ratio: 1 },
+			{ id: ABILITIES.TREASURE,   ratio: 1 },
+			{ id: ABILITIES.PUMPED_UP,  ratio: 1 },
+		];
+	}
+	
+	//Like New users buy ratio
+	if(likeNewOn100 == 1){
+		var abilityPriorityList = [
+			{ id: ABILITIES.WORMHOLE,   ratio: 0 },
+			{ id: ABILITIES.LIKE_NEW,   ratio: 1 },
+			{ id: ABILITIES.CRIT,       ratio: 1 },
+			{ id: ABILITIES.TREASURE,   ratio: 1 },
+			{ id: ABILITIES.PUMPED_UP,  ratio: 1 },
+		];
+	}
+	
 	var badgePoints = s().m_rgPlayerTechTree.badge_points;
 	var abilityData = s().m_rgTuningData.abilities;
 	var abilityPurchaseQueue = [];
@@ -687,6 +705,7 @@ function useAbilitiesAt100() {
 		}, 100);
 	}
 	
+	//This should equate to approximately 1.8 Like News per second
 	if (likeNewOn100) {
 		advLog("At level % 100 = 0, forcing the use of a like new", 2);
 		tryUsingAbility(ABILITIES.LIKE_NEW, false, true); //like new
