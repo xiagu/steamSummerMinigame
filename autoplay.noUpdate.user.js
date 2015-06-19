@@ -2,7 +2,7 @@
 // @name Ye Olde Megajump
 // @namespace https://github.com/YeOldeWH/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.  Now with megajump.  Brought to you by the Ye Olde Wormhole Schemers and DannyDaemonic
-// @version 6.0.0
+// @version 6.0.1
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -456,7 +456,7 @@ function updateLevelTimeTracker() {
 	if (currentLevel !== getGameLevel()) {
 		lastLevelTimeTaken.unshift({level: getGameLevel(),
 									timeStarted: s().m_rgGameData.timestamp,
-									timeTaken: s().m_rgGameData.timestamp - s().m_rgGameData.timestamp_level_start});
+									timeTakenInSeconds: s().m_rgGameData.timestamp - s().m_rgGameData.timestamp_level_start});
 	}
 
 	if (lastLevelTimeTaken.length > 10) {
@@ -564,10 +564,17 @@ function MainLoop() {
 					absoluteCurrentClickRate = Math.round(absoluteCurrentClickRate / 10);
 				}
 			}
+
+			var levelsUntilBoss = (CONTROL.rainingRounds - (level % CONTROL.rainingRounds))
+			if (levelsUntilBoss < 5 && Math.random < (0.9 / levelsUntilBoss)){
+				absoluteCurrentClickRate = clicksOnBossLevel;
+			}
+			
 			//If at the boss level, dont click at all
 			if (level % CONTROL.rainingRounds == 0) {
 				absoluteCurrentClickRate = clicksOnBossLevel;
 			}
+
 			
 			s().m_nClicks += absoluteCurrentClickRate;
 		}
@@ -726,7 +733,7 @@ function updateApproxYOWHClients() {
 
 	if (isBossLevel(lastLevel)) {
 		var levelsJumped = getGameLevel() - lastLevel;
-		var bossLevelTime = lastLevelTimeTaken[1].timeTaken;
+		var bossLevelTime = lastLevelTimeTaken[1].timeTakenInSeconds;
 
 		var possiblyInaccurateCount = Math.round(levelsJumped / (bossLevelTime * APPROXIMATE_WH_PER_PERSON_PER_SECOND));
 
@@ -746,8 +753,8 @@ function levelsPerSec() {
 		return 0;
 	}
 
-	return Math.round(((lastLevelTimeTaken[0].level - lastLevelTimeTaken.slice(-1).pop().level)
-			/ (lastLevelTimeTaken[0].timeStarted - lastLevelTimeTaken.slice(-1).pop().timeStarted)) * 1000 ) / 1000;
+	return Math.round(((getGameLevel() - lastLevelTimeTaken.slice(-1).pop().level)
+			/ (s().m_rgGameData.timestamp - lastLevelTimeTaken.slice(-1).pop().timeStarted)) );
 }
 
 
