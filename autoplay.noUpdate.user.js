@@ -767,8 +767,6 @@ function levelsPerSec() {
 		return 0;
 	}
 
-	window.lastLEvelTimeTaken = lastLevelTimeTaken;
-
 	var timeSpentOnBosses = 0;
 	var levelsGainedFromBosses = 0;
 
