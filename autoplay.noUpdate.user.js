@@ -262,6 +262,7 @@ function firstRun() {
 		".bc_time {color: #9AC0FF;}",
 		// Always show ability count
 		".abilitytemplate > a > .abilityitemquantity {visibility: visible; pointer-events: none;}",
+		".tv_ui.wh {background-image: url(http://i.imgur.com/vM1gTFY.gif);}"
 		""
 	];
 	styleNode.textContent = styleText.join("");
@@ -381,6 +382,9 @@ function firstRun() {
 	options2.appendChild(makeNumber("setLogLevel", "Change the log level (you shouldn't need to touch this)", logLevel, 0, 5, updateLogLevel));
 
 	info_box.appendChild(options2);
+
+	// Easter Wormhole Egg
+	$J('<div style="height: 52px; width: 100px; position: absolute; bottom: 85px; left: 828px; z-index: 12;" onclick="$J(\'.tv_ui\').toggleClass(\'wh\');"></div>').insertBefore('#row_bottom');
 
 	//Elemental upgrades lock
 	var ab_box = document.getElementById("abilities");
