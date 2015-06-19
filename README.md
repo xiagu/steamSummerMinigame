@@ -11,6 +11,7 @@ This fork has:
 * Auto clicks
 * Uses wormholes at optimal time
 * Disable most particles
+* Auto-updates securely from this GitHub
 
 ## What's new in version 5 (a.k.a. the *everything you know is wrong* edition) ##
 
@@ -19,6 +20,8 @@ This fork has:
 * Nukes will be used automatically outside of levels that include Our Great and Powerful Gold Helmed Overlord.
 * Off-laning on the x00 boss level allows players to spam Wormholes and Like News without players getting free Nuke charges, as well as keeping the autoclick DPS off of the boss.
 * Wormhole counter isn't updating during x00 is due to a change in the way we use Wormholes.  So fast.
+* The script will now automatically check for updates itself every 5-15 mins and reload itself if it updates, this means no more manual/afk updates!
+ * If you're not down for this, switch your script to use `https://github.com/YeOldeWH/MonsterMinigameWormholeWarp/raw/master/autoPlay.noUpdate.user.js` and update manually through Greasemonkey/Tampermonkey like normal.
 
 ## Features ##
 
