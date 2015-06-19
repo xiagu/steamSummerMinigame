@@ -2,7 +2,7 @@
 // @name Ye Olde Megajump
 // @namespace https://github.com/YeOldeWH/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.  Now with megajump.  Brought to you by the Ye Olde Wormhole Schemers and DannyDaemonic
-// @version 5.0.8
+// @version 5.0.9
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -1843,7 +1843,7 @@ function tryUsingAbility(itemId, checkInLane, forceAbility) {
 
 	// Randomly Don't use this ability when we're getting close to the boss
 	// This avoids overflow damage 
-	} else if (two_digit_level > 90
+	} else if (two_digit_level > 50
 				&& needs_to_be_blocked
 				&& Math.random() < 0.8){
 		return false;
