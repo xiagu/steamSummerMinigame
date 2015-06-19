@@ -2,7 +2,7 @@
 // @name Ye Olde Megajump
 // @namespace https://github.com/YeOldeWH/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.  Now with megajump.  Brought to you by the Ye Olde Wormhole Schemers and DannyDaemonic
-// @version 5.0.4
+// @version 5.0.5
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -42,7 +42,6 @@ var removeAllText = getPreferenceBoolean("removeAllText", false);
 var enableFingering = getPreferenceBoolean("enableFingering", true);
 var disableRenderer = getPreferenceBoolean("disableRenderer", true);
 var enableTrollTrack = getPreferenceBoolean("enableTrollTrack", false);
-var praiseGoldHelm = getPreferenceBoolean("praiseGoldHelm", true);
 var enableElementLock = getPreferenceBoolean("enableElementLock", true);
 var enableAutoRefresh = getPreferenceBoolean("enableAutoRefresh", typeof GM_info !== "undefined");
 
@@ -373,8 +372,6 @@ function firstRun() {
 
 	options2.appendChild(makeCheckBox("enableFingering", "Enable targeting pointer", enableFingering, toggleFingering, false));
 	options2.appendChild(makeCheckBox("enableTrollTrack", "Enable tracking trolls", enableTrollTrack, toggleTrackTroll, false));
-	options2.appendChild(makeCheckBox("praiseGoldHelm", "Praise Gold Helm!", praiseGoldHelm, togglePraise, false));
-	options2.appendChild(makeDropdown("praiseGoldHelmImage", "", goldHelmUI, goldHelmURLs, changePraiseImage));
 	options2.appendChild(makeNumber("setLogLevel", "Change the log level (you shouldn't need to touch this)", logLevel, 0, 5, updateLogLevel));
 
 	info_box.appendChild(options2);
@@ -1301,7 +1298,7 @@ function updatePlayersInGame() {
 }
 
 function fixActiveCapacityUI() {
-	w.$J('.tv_ui').css('background-image', 'url(https://i.imgur.com/1zRXQgm.png)');
+	w.$J('.tv_ui').css('background-image', 'url(http://i.imgur.com/6BuBgxY.png)');
 	w.$J('#activeinlanecontainer').css('height', '154px');
 	w.$J('#activitycontainer').css('height', '270px');
 	w.$J('#activityscroll').css('height', '270px');
