@@ -704,7 +704,7 @@ function useAbilitiesAt100() {
 				return;
 			}
 			if (bHaveItem(ABILITIES.WORMHOLE)) triggerAbility(ABILITIES.WORMHOLE); //wormhole
-		}, 50);
+		}, 100);
 	}
 	
 	//This should equate to approximately 1.8 Like News per second
