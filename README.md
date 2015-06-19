@@ -6,12 +6,12 @@
 
 ### [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo) ###
 
-1. Visit `https://github.com/YeOldeWH/MonsterMinigameWormholeWarp/raw/master/autoPlay.user.js`
+1. Visit https://github.com/YeOldeWH/MonsterMinigameWormholeWarp/raw/master/autoPlay.user.js
 2. When the editor has loaded, click `Install` (*NOT* `Process with Chrome`).
 
 ### [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) ###
 
-1. Navigate to `https://github.com/YeOldeWH/MonsterMinigameWormholeWarp/raw/master/autoPlay.user.js`.
+1. Navigate to https://github.com/YeOldeWH/MonsterMinigameWormholeWarp/raw/master/autoPlay.user.js
 2. Right click on the page, and click `Save Page As`.
 3. While Firefox is still open, open a File Manager of any sort, and navigate to the directory you saved the script.
 4. Drag & drop the script file onto the Firefox window.
