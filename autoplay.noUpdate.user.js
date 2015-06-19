@@ -2,7 +2,7 @@
 // @name Ye Olde Megajump
 // @namespace https://github.com/YeOldeWH/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.  Now with megajump.  Brought to you by the Ye Olde Wormhole Schemers and DannyDaemonic
-// @version 5.0.5
+// @version 5.0.6
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -48,6 +48,10 @@ var enableAutoRefresh = getPreferenceBoolean("enableAutoRefresh", typeof GM_info
 var autoRefreshMinutes = 30;
 var autoRefreshMinutesRandomDelay = 10;
 var autoRefreshSecondsCheckLoadedDelay = 30;
+
+var predictTicks = 0;
+var predictJumps = 0;
+var predictLastWormholesUpdate = 0;
 
 // DO NOT MODIFY
 var isPastFirstRun = false;
@@ -1216,6 +1220,36 @@ function unlockElements() {
 	}
 }
 
+//I'm sorry of the way I name things. This function predicts jumps on a warp boss level, returns the value.
+function estimateJumps() {
+	var level = getGameLevel();
+	var wormholesNow = 0;
+	//Gather total wormholes active.
+	for (var i = 0; i <= 2; i++) {
+		if (typeof w.g_Minigame.m_CurrentScene.m_rgLaneData[i].abilities[26] !== 'undefined') {
+			wormholesNow += w.g_Minigame.m_CurrentScene.m_rgLaneData[i].abilities[26];
+		}
+	}
+	//During baws round fc
+	if (level % CONTROL.rainingRounds == 0)
+	{
+		if (predictLastWormholesUpdate !== wormholesNow)
+		{
+			predictTicks++;
+			predictJumps += wormholesNow;
+			predictLastWormholesUpdate = wormholesNow;
+		}
+	}
+	else
+	{
+		predictTicks = 0;
+		predictJumps = 0;
+		predictLastWormholesUpdate = 0;
+		return 0;
+	}
+	return predictJumps / predictTicks * (s().m_rgGameData.timestamp - s().m_rgGameData.timestamp_level_start);
+}
+
 function lockElements() {
 	var elementMultipliers = [
 		s().m_rgPlayerTechTree.damage_multiplier_fire,
@@ -1298,7 +1332,7 @@ function updatePlayersInGame() {
 }
 
 function fixActiveCapacityUI() {
-	w.$J('.tv_ui').css('background-image', 'url(http://i.imgur.com/6BuBgxY.png)');
+	w.$J('.tv_ui').css('background-image', 'url(http://i.imgur.com/9R0436k.gif)');
 	w.$J('#activeinlanecontainer').css('height', '154px');
 	w.$J('#activitycontainer').css('height', '270px');
 	w.$J('#activityscroll').css('height', '270px');
@@ -2109,7 +2143,7 @@ function updateLevelInfoTitle(level)
 	var exp_lvl = expectedLevel(level);
 	var rem_time = countdown(exp_lvl.remaining_time);
 
-	ELEMENTS.ExpectedLevel.textContent = 'Level: ' + level;
+	ELEMENTS.ExpectedLevel.textContent = 'Level: ' + level + ', Expected Jump: ' + w.FormatNumberForDisplay(estimateJumps(), 5);
 	ELEMENTS.RemainingTime.textContent = 'Remaining Time: ' + rem_time.hours + ' hours, ' + rem_time.minutes + ' minutes.';
 }
 
