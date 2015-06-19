@@ -25,14 +25,14 @@ var medicOn100 = 1;
 var clicksOnBossLevel = 0;
 var upgThreshold = 100;
 
-var enableAutoClicker = getPreferenceBoolean("enableAutoClicker", true);
+var enableAutoClicker = true;
 
-var enableAutoUpgradeHP = getPreferenceBoolean("enableAutoUpgradeHP", true);
-var enableAutoUpgradeClick = getPreferenceBoolean("enableAutoUpgradeClick", true);
-var enableAutoUpgradeDPS = getPreferenceBoolean("enableAutoUpgradeDPS", false);
-var enableAutoUpgradeElemental = getPreferenceBoolean("enableAutoUpgradeElemental", false);
-var enableAutoPurchase = getPreferenceBoolean("enableAutoPurchase", false);
-var enableAutoBadgePurchase = getPreferenceBoolean("enableAutoBadgePurchase", true);
+var enableAutoUpgradeHP = true;
+var enableAutoUpgradeClick = true;
+var enableAutoUpgradeDPS = false;
+var enableAutoUpgradeElemental = true;
+var enableAutoPurchase = true;
+var enableAutoBadgePurchase = true;
 
 var removeInterface = getPreferenceBoolean("removeInterface", true); // get rid of a bunch of pointless DOM
 var removeParticles = getPreferenceBoolean("removeParticles", true);
@@ -354,13 +354,6 @@ function firstRun() {
 	var options1 = document.createElement("div");
 	options1.className = "options_column";
 
-	options1.appendChild(makeCheckBox("enableAutoClicker", "Enable AutoClicker", enableAutoClicker, toggleAutoClicker, false));
-	options1.appendChild(makeCheckBox("enableAutoUpgradeHP", "Enable AutoUpgrade HP", enableAutoUpgradeHP, toggleAutoUpgradeHP, false));
-	options1.appendChild(makeCheckBox("enableAutoUpgradeClick", "Enable AutoUpgrade Clicks", enableAutoUpgradeClick, toggleAutoUpgradeClick, false));
-	options1.appendChild(makeCheckBox("enableAutoUpgradeDPS", "Enable AutoUpgrade DPS", enableAutoUpgradeDPS, toggleAutoUpgradeDPS, false));
-	options1.appendChild(makeCheckBox("enableAutoUpgradeElemental", "Enable AutoUpgrade locked elemental", enableAutoUpgradeElemental, toggleAutoUpgradeElemental, false));
-	options1.appendChild(makeCheckBox("enableAutoPurchase", "Enable AutoPurchase Abilities", enableAutoPurchase, toggleAutoPurchase, false));
-	options1.appendChild(makeCheckBox("enableAutoBadgePurchase", "Enable AutoPurchase badges (WH strat)", enableAutoBadgePurchase, toggleAutoBadgePurchase, false));
 	options1.appendChild(makeCheckBox("removeInterface", "Remove interface", removeInterface, handleEvent, true));
 	options1.appendChild(makeCheckBox("removeParticles", "Remove particle effects", removeParticles, handleEvent, true));
 	options1.appendChild(makeCheckBox("removeFlinching", "Remove flinching effects", removeFlinching, handleEvent, true));
