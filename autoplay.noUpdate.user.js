@@ -59,6 +59,9 @@ var isAlreadyRunning = false;
 var refreshTimer = null;
 var currentClickRate = enableAutoClicker ? clickRate : 0;
 var lastLevel = 0;
+var lastLevelTimeTaken = [];
+var approxYOWHClients = 0;
+
 var trt_oldCrit = function() {};
 var trt_oldPush = function() {};
 var trt_oldRender = function() {};
@@ -281,7 +284,7 @@ function firstRun() {
 
 	CUI.prototype.UpdateLog = function( rgLaneLog ) {
 		var abilities = this.m_Game.m_rgTuningData.abilities;
-		var level = s().m_rgGameData.level + 1;
+		var level = getGameLevel();
 
 		if( !this.m_Game.m_rgPlayerTechTree ) return;
 
@@ -447,6 +450,20 @@ function getTimeleft() {
 	return 61;
 }
 
+function updateLevelTimeTracker() {
+	var currentLevel = (lastLevelTimeTaken[0] && lastLevelTimeTaken[0].level) || 0;
+
+	if (currentLevel !== getGameLevel()) {
+		lastLevelTimeTaken.unshift({level: getGameLevel(),
+									timeStarted: s().m_rgGameData.timestamp,
+									timeTaken: s().m_rgGameData.timestamp - s().m_rgGameData.timestamp_level_start});
+	}
+
+	if (lastLevelTimeTaken.length > 10) {
+		lastLevelTimeTaken.pop();
+	}
+}
+
 function MainLoop() {
 	var status = s().m_rgGameData.status;
 	if(status != GAME_STATUS.RUNNING) {
@@ -457,7 +474,9 @@ function MainLoop() {
 		return;
 	}
 
-	var level = s().m_rgGameData.level + 1;
+	var level = getGameLevel();
+	updateLevelTimeTracker();
+	updateApproxYOWHClients();
 
 	if (!isAlreadyRunning) {
 		isAlreadyRunning = true;
@@ -691,13 +710,54 @@ function useAllAbilities() {
 	}
 }
 
+function isBossLevel(level) {
+	return level % 100 === 0
+}
+
+
+function updateApproxYOWHClients() {
+	var APPROXIMATE_WH_PER_PERSON_PER_SECOND = 10;
+
+	if (lastLevelTimeTaken.length < 2) {
+		return;
+	}
+
+	var lastLevel = lastLevelTimeTaken[1].level;
+
+	if (isBossLevel(lastLevel)) {
+		var levelsJumped = getGameLevel() - lastLevel;
+		var bossLevelTime = lastLevelTimeTaken[1].timeTaken;
+
+		var possiblyInaccurateCount = Math.round(levelsJumped / (bossLevelTime * APPROXIMATE_WH_PER_PERSON_PER_SECOND));
+
+		if (possiblyInaccurateCount < 1500) {
+			approxYOWHClients = possiblyInaccurateCount;
+		} else {
+			console.log("Inaccurate count of YOWH Clients: ",possiblyInaccurateCount,
+						", levelsJumped: ", levelsJumped,
+						", bossLevelTime: ", bossLevelTime,
+						", lastLevelTimeTaken", lastLevelTimeTaken);
+		}
+	}
+}
+
+function levelsPerSec() {
+	if (lastLevelTimeTaken.length < 2) {
+		return 0;
+	}
+
+	return Math.round(((lastLevelTimeTaken[0].level - lastLevelTimeTaken.slice(-1).pop().level)
+			/ (lastLevelTimeTaken[0].timeStarted - lastLevelTimeTaken.slice(-1).pop().timeStarted)) * 1000 ) / 1000;
+}
+
+
 //at level 100 spam WH, Like New, and medics, based on your role
 function useAbilitiesAt100() {
 
 	if (wormholeOn100 && !w.SteamDB_Wormhole_Timer) {
 		advLog("At level % 100 = 0, forcing the use of wormholes nonstop", 2);
 		w.SteamDB_Wormhole_Timer = w.setInterval(function(){
-			if ((s().m_rgGameData.level + 1) % 100 !== 0) {
+			if (getGameLevel() % 100 !== 0) {
 				// We're not on a *00 level anymore, stop!!
 				w.clearInterval(w.SteamDB_Wormhole_Timer);
 				w.SteamDB_Wormhole_Timer = false;
@@ -1825,7 +1885,7 @@ function tryUsingAbility(itemId, checkInLane, forceAbility) {
 		return false;
 	}
 
-	var level = s().m_rgGameData.level + 1;
+	var level = getGameLevel();
 	var needs_to_be_blocked = false;
 	var two_digit_level = level % 100;
 	
@@ -2139,7 +2199,7 @@ function updateLevelInfoTitle(level)
 	var exp_lvl = expectedLevel(level);
 	var rem_time = countdown(exp_lvl.remaining_time);
 
-	ELEMENTS.ExpectedLevel.textContent = 'Level: ' + level + ', Expected Jump: ' + w.FormatNumberForDisplay(estimateJumps(), 5);
+	ELEMENTS.ExpectedLevel.textContent = 'Level: ' + level + ', Levels/second: ' + levelsPerSec() + ', YOWHers: ' + (approxYOWHClients > 0 ? approxYOWHClients : '??');
 	ELEMENTS.RemainingTime.textContent = 'Remaining Time: ' + rem_time.hours + ' hours, ' + rem_time.minutes + ' minutes.';
 }
 
