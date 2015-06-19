@@ -1748,8 +1748,26 @@ function tryUsingAbility(itemId, checkInLane, forceAbility) {
 		return false;
 	}
 
-	triggerAbility(itemId);
+	var level = s().m_rgGameData.level + 1;
+	var needs_to_be_blocked = false;
+	var two_digit_level = level % 100;
+	
+	var needs_to_be_blocked = (BOSS_DISABLED_ABILITIES.indexOf(itemId) != -1);
+	
+	// must not use any damaging ability on boss levels
+	if (two_digit_level == 0 && needs_to_be_blocked) {
+		return false;
 
+	// Randomly Don't use this ability when we're getting close to the boss
+	// This avoids overflow damage 
+	} else if (two_digit_level > 90
+				&& needs_to_be_blocked
+				&& Math.random() < 0.8){
+		return false;
+	}
+	
+	triggerAbility(itemId);
+	
 	return true;
 }
 
