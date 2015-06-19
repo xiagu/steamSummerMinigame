@@ -2,7 +2,7 @@
 // @name Ye Olde Megajump
 // @namespace https://github.com/YeOldeWH/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.  Now with megajump.  Brought to you by the Ye Olde Wormhole Schemers and DannyDaemonic
-// @version 6.0.5
+// @version 6.0.6
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -766,8 +766,6 @@ function levelsPerSec() {
 	if (lastLevelTimeTaken.length < 2) {
 		return 0;
 	}
-
-	window.lastLEvelTimeTaken = lastLevelTimeTaken;
 
 	var timeSpentOnBosses = 0;
 	var levelsGainedFromBosses = 0;
