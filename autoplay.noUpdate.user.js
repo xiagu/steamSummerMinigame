@@ -982,6 +982,31 @@ function makeNumber(name, desc, value, min, max, listener) {
 	return label;
 }
 
+	function makeDropdown(name, desc, value, values, listener) {
+		var label = document.createElement("label");
+		var description = document.createTextNode(desc);
+		var drop = document.createElement("select");
+
+		for(var k in values) {
+			var choice = document.createElement("option");
+			choice.value = values[k];
+			choice.textContent = k;
+			if(values[k] == value) {
+				choice.selected = true;
+			}
+			drop.appendChild(choice);
+		}
+
+		drop.name = name;
+		drop.style.marginRight = "5px";
+		drop.onchange = listener;
+
+		label.appendChild(drop);
+		label.appendChild(description);
+		label.appendChild(document.createElement("br"));
+		return label;
+	}
+
 function makeCheckBox(name, desc, state, listener, reqRefresh) {
 	var asterisk = document.createElement('span');
 	asterisk.className = "asterisk";
