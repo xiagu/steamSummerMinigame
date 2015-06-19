@@ -262,7 +262,7 @@ function firstRun() {
 		".bc_time {color: #9AC0FF;}",
 		// Always show ability count
 		".abilitytemplate > a > .abilityitemquantity {visibility: visible; pointer-events: none;}",
-		".tv_ui.wh {background-image: url(http://i.imgur.com/vM1gTFY.gif);}"
+		".tv_ui.wh {background-image: url(http://i.imgur.com/vM1gTFY.gif);}",
 		""
 	];
 	styleNode.textContent = styleText.join("");
