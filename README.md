@@ -63,21 +63,21 @@ This fork has:
 ### Manual ###
 
 ##### Chrome #####
-1. Open https://github.com/YeOldeWH/MonsterMinigameWormholeWarp/raw/master/autoPlay.user.js
+1. Open https://raw.githubusercontent.com/YeOldeWH/MonsterMinigameWormholeWarp/master/autoplay.noUpdate.user.js
 2. Select All, Copy.
 3. Navigate to `http://steamcommunity.com/minigame/` and join or start a game.
 4. Press `Ctrl + Shift + J`.
 5. Paste into the javascript input, and hit `Enter`.
 
 ##### Firefox #####
-1. Open https://github.com/YeOldeWH/MonsterMinigameWormholeWarp/raw/master/autoPlay.user.js
+1. Open https://raw.githubusercontent.com/YeOldeWH/MonsterMinigameWormholeWarp/master/autoplay.noUpdate.user.js
 2. Select All, Copy.
 3. Navigate to `http://steamcommunity.com/minigame/` and join or start a game.
 4. Press `Ctrl + Shift + K`.
 5. Paste into the javascript input, and hit `Enter`.
 
 ##### Internet Explorer / Microsoft Edge #####
-1. Open https://github.com/YeOldeWH/MonsterMinigameWormholeWarp/raw/master/autoPlay.user.js
+1. Open https://raw.githubusercontent.com/YeOldeWH/MonsterMinigameWormholeWarp/master/autoplay.noUpdate.user.js
 2. Select All, Copy.
 3. Navigate to `http://steamcommunity.com/minigame/` and join or start a game.
 4. Press `F12` and navigate to the `Console` tab.
