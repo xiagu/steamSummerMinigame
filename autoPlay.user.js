@@ -2,7 +2,7 @@
 // @name Ye Olde Megajump
 // @namespace https://github.com/YeOldeWH/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.  Now with megajump.  Brought to you by the Ye Olde Wormhole Schemers and DannyDaemonic
-// @version 5.0.1.0
+// @version 5.0.1.1
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -460,8 +460,8 @@ function MainLoop() {
 	if (!isAlreadyRunning) {
 		isAlreadyRunning = true;
 
-		if ((level % 100 == 0 && bHaveItem(ABILITIES.WORMHOLE))
-				|| likeNewOn100 ) {
+		if ((level % 100 == 0) &&
+				(bHaveItem(ABILITIES.WORMHOLE) || bHaveItem(ABILITIES.LIKE_NEW) )) {
 			// On a WH level, jump everyone with wormholes to lane 0, unless there is a boss there, in which case jump to lane 1.
 			var targetLane = 0;
 			// Check lane 0, enemy 0 to see if it's a boss
@@ -1748,8 +1748,26 @@ function tryUsingAbility(itemId, checkInLane, forceAbility) {
 		return false;
 	}
 
-	triggerAbility(itemId);
+	var level = s().m_rgGameData.level + 1;
+	var needs_to_be_blocked = false;
+	var two_digit_level = level % 100;
+	
+	var needs_to_be_blocked = (BOSS_DISABLED_ABILITIES.indexOf(itemId) != -1);
+	
+	// must not use any damaging ability on boss levels
+	if (two_digit_level == 0 && needs_to_be_blocked) {
+		return false;
 
+	// Randomly Don't use this ability when we're getting close to the boss
+	// This avoids overflow damage 
+	} else if (two_digit_level > 90
+				&& needs_to_be_blocked
+				&& Math.random() < 0.8){
+		return false;
+	}
+	
+	triggerAbility(itemId);
+	
 	return true;
 }
 
