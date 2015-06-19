@@ -1897,7 +1897,7 @@ function tryUsingAbility(itemId, checkInLane, forceAbility) {
 
 	// Randomly Don't use this ability when we're getting close to the boss
 	// This avoids overflow damage 
-	} else if (two_digit_level > 50
+	} else if (two_digit_level > 90
 				&& needs_to_be_blocked
 				&& Math.random() < 0.8){
 		return false;
