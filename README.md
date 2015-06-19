@@ -11,7 +11,7 @@ This fork has:
 * Auto clicks
 * Uses wormholes at optimal time
 * Disable most particles
-* Auto-updates securely from this GitHub
+* Auto-updates securely from this GitHub repo
 
 ## What's new in version 5 (a.k.a. the *everything you know is wrong* edition) ##
 
