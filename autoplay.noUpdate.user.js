@@ -1889,12 +1889,11 @@ function tryUsingAbility(itemId, checkInLane, forceAbility) {
 	var level = getGameLevel();
 	var needs_to_be_blocked = false;
 	var two_digit_level = level % 100;
-	
+
 	var needs_to_be_blocked = (BOSS_DISABLED_ABILITIES.indexOf(itemId) != -1);
 
 	// must not use any damaging ability on boss levels
 	if (two_digit_level == 0 && needs_to_be_blocked) {
-		console.debug("Blocked on boss level");
 		return false;
 
 	// Randomly Don't use this ability when we're getting close to the boss
@@ -1903,12 +1902,10 @@ function tryUsingAbility(itemId, checkInLane, forceAbility) {
 		// Calculate current ability usage rate
 		var nextTickLevel = Math.ceil(level + levelsPerSec());
 		var nextWHLevel = Math.ceil(nextTickLevel / 100)*100;
-		console.debug("ldiff: " + (nextWHLevel - nextTickLevel) );
 		var abilityRate = Math.min( 1, Math.sqrt( nextWHLevel - nextTickLevel )/10 + minAbilityUsePercent );
-		console.debug("Current ability rate: " + abilityRate);
 
 		if( Math.random() < (1 - abilityRate) ) {
-			console.debug("Not using ability");
+			advLog('Rate limited ability - not using');
 			return false;
 		}
 	}
