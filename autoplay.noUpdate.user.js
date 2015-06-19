@@ -2,7 +2,7 @@
 // @name Ye Olde Megajump
 // @namespace https://github.com/YeOldeWH/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.  Now with megajump.  Brought to you by the Ye Olde Wormhole Schemers and DannyDaemonic
-// @version 5.0.3
+// @version 5.0.4
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -56,15 +56,6 @@ var isAlreadyRunning = false;
 var refreshTimer = null;
 var currentClickRate = enableAutoClicker ? clickRate : 0;
 var lastLevel = 0;
-var goldHelmURLs = {
-	"Original Gold Helm": "https://i.imgur.com/1zRXQgm.png",
-	"Moving Gold Helm": "http://i.imgur.com/XgT8Us8.gif",
-	"Golden Gaben": "http://i.imgur.com/ueDBBrA.png",
-	"Gaben + Snoop Dogg": "http://i.imgur.com/9R0436k.gif",
-	"Wormhole Gaben": "http://i.imgur.com/6BuBgxY.png"
-};
-var goldHelmUI = getPreference("praiseGoldHelmImage", goldHelmURLs["Golden Gaben"]);
-var fixedUI = "http://i.imgur.com/ieDoLnx.png";
 var trt_oldCrit = function() {};
 var trt_oldPush = function() {};
 var trt_oldRender = function() {};
@@ -200,6 +191,8 @@ function firstRun() {
 	trt_oldRender = w.g_Minigame.Render;
 
 	toggleFingering();
+
+	fixActiveCapacityUI();
 
 	if(enableElementLock) {
 		lockElements();
@@ -867,20 +860,6 @@ function useAutoUpgrade() {
 
 }
 
-function togglePraise(event) {
-	if (event !== undefined) {
-		praiseGoldHelm = handleCheckBox(event);
-	}
-	fixActiveCapacityUI();
-}
-
-function changePraiseImage(event) {
-	if (event !== undefined) {
-		goldHelmUI = handleDropdown(event);
-	}
-	fixActiveCapacityUI();
-}
-
 function toggleAutoUpgradeDPS(event) {
 	var value = enableAutoUpgradeDPS;
 
@@ -1322,11 +1301,7 @@ function updatePlayersInGame() {
 }
 
 function fixActiveCapacityUI() {
-	if(praiseGoldHelm) {
-		w.$J('.tv_ui').css('background-image', 'url(' + goldHelmUI + ')');
-	} else {
-		w.$J('.tv_ui').css('background-image', 'url(' + fixedUI + ')');
-	}
+	w.$J('.tv_ui').css('background-image', 'url(https://i.imgur.com/1zRXQgm.png)');
 	w.$J('#activeinlanecontainer').css('height', '154px');
 	w.$J('#activitycontainer').css('height', '270px');
 	w.$J('#activityscroll').css('height', '270px');
