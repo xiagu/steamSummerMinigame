@@ -2,7 +2,7 @@
 // @name Ye Olde Megajump
 // @namespace https://github.com/YeOldeWH/MonsterMinigameWormholeWarp
 // @description A script that runs the Steam Monster Minigame for you.  Now with megajump.  Brought to you by the Ye Olde Wormhole Schemers and DannyDaemonic
-// @version 5.0.2
+// @version 5.0.3
 // @match *://steamcommunity.com/minigame/towerattack*
 // @match *://steamcommunity.com//minigame/towerattack*
 // @grant none
@@ -42,9 +42,8 @@ var removeAllText = getPreferenceBoolean("removeAllText", false);
 var enableFingering = getPreferenceBoolean("enableFingering", true);
 var disableRenderer = getPreferenceBoolean("disableRenderer", true);
 var enableTrollTrack = getPreferenceBoolean("enableTrollTrack", false);
-
+var praiseGoldHelm = getPreferenceBoolean("praiseGoldHelm", true);
 var enableElementLock = getPreferenceBoolean("enableElementLock", true);
-
 var enableAutoRefresh = getPreferenceBoolean("enableAutoRefresh", typeof GM_info !== "undefined");
 
 var autoRefreshMinutes = 30;
@@ -57,6 +56,15 @@ var isAlreadyRunning = false;
 var refreshTimer = null;
 var currentClickRate = enableAutoClicker ? clickRate : 0;
 var lastLevel = 0;
+var goldHelmURLs = {
+	"Original Gold Helm": "https://i.imgur.com/1zRXQgm.png",
+	"Moving Gold Helm": "http://i.imgur.com/XgT8Us8.gif",
+	"Golden Gaben": "http://i.imgur.com/ueDBBrA.png",
+	"Gaben + Snoop Dogg": "http://i.imgur.com/9R0436k.gif",
+	"Wormhole Gaben": "http://i.imgur.com/6BuBgxY.png"
+};
+var goldHelmUI = getPreference("praiseGoldHelmImage", goldHelmURLs["Golden Gaben"]);
+var fixedUI = "http://i.imgur.com/ieDoLnx.png";
 var trt_oldCrit = function() {};
 var trt_oldPush = function() {};
 var trt_oldRender = function() {};
@@ -372,6 +380,8 @@ function firstRun() {
 
 	options2.appendChild(makeCheckBox("enableFingering", "Enable targeting pointer", enableFingering, toggleFingering, false));
 	options2.appendChild(makeCheckBox("enableTrollTrack", "Enable tracking trolls", enableTrollTrack, toggleTrackTroll, false));
+	options2.appendChild(makeCheckBox("praiseGoldHelm", "Praise Gold Helm!", praiseGoldHelm, togglePraise, false));
+	options2.appendChild(makeDropdown("praiseGoldHelmImage", "", goldHelmUI, goldHelmURLs, changePraiseImage));
 	options2.appendChild(makeNumber("setLogLevel", "Change the log level (you shouldn't need to touch this)", logLevel, 0, 5, updateLogLevel));
 
 	info_box.appendChild(options2);
@@ -857,6 +867,20 @@ function useAutoUpgrade() {
 
 }
 
+function togglePraise(event) {
+	if (event !== undefined) {
+		praiseGoldHelm = handleCheckBox(event);
+	}
+	fixActiveCapacityUI();
+}
+
+function changePraiseImage(event) {
+	if (event !== undefined) {
+		goldHelmUI = handleDropdown(event);
+	}
+	fixActiveCapacityUI();
+}
+
 function toggleAutoUpgradeDPS(event) {
 	var value = enableAutoUpgradeDPS;
 
@@ -1270,6 +1294,17 @@ function updatePlayersInGame() {
 		laneData[ 1 ].players +
 		laneData[ 2 ].players;
 	ELEMENTS.PlayersInGame.textContent = totalPlayers + "/1500";
+}
+
+function fixActiveCapacityUI() {
+	if(praiseGoldHelm) {
+		w.$J('.tv_ui').css('background-image', 'url(' + goldHelmUI + ')');
+	} else {
+		w.$J('.tv_ui').css('background-image', 'url(' + fixedUI + ')');
+	}
+	w.$J('#activeinlanecontainer').css('height', '154px');
+	w.$J('#activitycontainer').css('height', '270px');
+	w.$J('#activityscroll').css('height', '270px');
 }
 
 function goToLaneWithBestTarget(level) {
