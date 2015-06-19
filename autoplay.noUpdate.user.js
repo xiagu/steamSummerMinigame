@@ -336,7 +336,7 @@ function firstRun() {
 		while(e.children.length > 20 ) {
 			e.children[e.children.length-1].remove();
 		}
-	}
+	};
 
 	// Add "players in game" label
 	var titleActivity = document.querySelector( '.title_activity' );
@@ -1273,7 +1273,6 @@ function lockElements() {
 
 	if (leveled >= 2) {
 		advLog("More than 2 elementals leveled to 3 or above, not locking.", 1);
-		return;
 	} else if (leveled == 1) {
 		advLog("Found existing lock on " + lastLeveled + ", locking to it.", 1);
 		lockToElement(lastLeveled);
@@ -1330,7 +1329,7 @@ function updatePlayersInGame() {
 }
 
 function fixActiveCapacityUI() {
-	w.$J('.tv_ui').css('background-image', 'url(http://i.imgur.com/9R0436k.gif)');
+	w.$J('.tv_ui').css('background-image', 'url(//i.imgur.com/9R0436k.gif)');
 	w.$J('#activeinlanecontainer').css('height', '154px');
 	w.$J('#activitycontainer').css('height', '270px');
 	w.$J('#activityscroll').css('height', '270px');
@@ -1509,12 +1508,7 @@ function hasMaxCriticalOnLane() {
 	var crit = getActiveAbilityLaneCount(ABILITIES.CRIT);
 	var totalCritical = goodLuckCharms + crit;
 
-	if (totalCritical >= 99) { // Lane has 1% by default
-		return true;
-	}
-	else {
-		return false;
-	}
+	return totalCritical >= 99;
 }
 
 function useAbilities(level)
