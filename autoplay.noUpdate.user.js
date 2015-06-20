@@ -2216,7 +2216,7 @@ function appendBreadcrumbsTitleInfo() {
 
 	element = document.createElement('span');
 	element.className = "bc_span bc_level";
-	element.textContent = 'Level: 0, Expected Level: 0, Likely Level: 0';
+	element.textContent = 'Level: 0';
 	breadcrumbs.appendChild(element);
 	ELEMENTS.ExpectedLevel = element;
 
