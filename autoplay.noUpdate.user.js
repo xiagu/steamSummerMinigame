@@ -164,7 +164,7 @@ var CONTROL = {
 	speedThreshold: 2000,
 	rainingRounds: 100,
 	disableGoldRainLevels: 500,
-	rainingSafeRounds: 10
+	rainingSafeRounds: 9
 };
 
 var GAME_STATUS = {
