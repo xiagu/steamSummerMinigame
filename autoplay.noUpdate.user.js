@@ -177,6 +177,14 @@ var GAME_STATUS = {
 // if not yet available, they will be disabled in firstRun
 disableParticles();
 
+// Define custom getters for document.hidden and the prefixed versions, so the game
+// doesn't stop ticking in the background.
+if (Object.defineProperty) {
+  var props = ['hidden', 'webkitHidden', 'mozHidden', 'msHidden'];
+  for (var i = 0; i < props.length; ++i)
+    Object.defineProperty(document, props[i], {value: false});
+}
+
 if(!getPreferenceBoolean("alertShown", false)) {
 	w.ShowAlertDialog(
 		'Ye Olde Megajump',
